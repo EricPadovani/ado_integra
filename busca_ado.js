@@ -943,7 +943,7 @@ function gerarHTML(iteracoes) {
                 content.innerHTML = allHtml + '<div class="loading">⏳ Consultando SAP — ' + zsafe + ' (' + (i+1) + '/' + zsafeCodes.length + ')...</div>';
 
                 try {
-                    const sapUrl = 'http://localhost:3001/api/analise?workItemId=' + workItemId + '&iZsafe=' + encodeURIComponent(zsafe);
+                    const sapUrl = '/api/analise?workItemId=' + workItemId + '&iZsafe=' + encodeURIComponent(zsafe);
                     const sapResp = await fetch(sapUrl);
                     const sapData = await sapResp.json();
                     if (sapData.success) {
@@ -961,7 +961,7 @@ function gerarHTML(iteracoes) {
                 if (sapCode) {
                     content.innerHTML = allHtml + sapHtml + '<div class="loading">⏳ Analisando com IA — ' + zsafe + '... (pode levar ~30s)</div>';
                     try {
-                        const iaResp = await fetch('http://localhost:3001/api/ia-analise', {
+                        const iaResp = await fetch('/api/ia-analise', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ adoSpec: adoSpec, sapCode: sapCode, zsafe: zsafe, workItemId: String(workItemId) })
@@ -1057,7 +1057,7 @@ function gerarHTML(iteracoes) {
             if (resultDiv) resultDiv.innerHTML = '<div class="loading">⏳ Executando RFC Z_IN_EXEC_EXT...</div>';
 
             try {
-                const resp = await fetch('http://localhost:3001/api/rfc-exec', {
+                const resp = await fetch('/api/rfc-exec', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1145,7 +1145,7 @@ function gerarHTML(iteracoes) {
 
                 // 3. Chamar RFC Z_IN_EXEC_VAL
                 resultDiv.innerHTML = '<div class="loading">⏳ Executando RFC Z_IN_EXEC_VAL com ' + numLogs.length + ' logs...</div>';
-                const valResp = await fetch('http://localhost:3001/api/rfc-val', {
+                const valResp = await fetch('/api/rfc-val', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ numLogs: numLogs })
@@ -1181,7 +1181,7 @@ function gerarHTML(iteracoes) {
                     var safxAnalyses = await Promise.all(safxKeys.map(async function(safx) {
                         for (var tentativa = 1; tentativa <= 2; tentativa++) {
                             try {
-                                var safxResp = await fetch('http://localhost:3001/api/ia-val-safx', {
+                                var safxResp = await fetch('/api/ia-val-safx', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
                                     body: JSON.stringify({ safx: safx, items: bySafx[safx], camposChave: camposPorSafx[safx] || [] })
@@ -1212,7 +1212,7 @@ function gerarHTML(iteracoes) {
                     // Consolida todos os resultados
                     iaValDiv.innerHTML = '<div class="loading">⏳ Consolidando análises (' + safxKeys.length + ' SAFXs)...</div>';
                     try {
-                        var consolResp = await fetch('http://localhost:3001/api/ia-val-consolidar', {
+                        var consolResp = await fetch('/api/ia-val-consolidar', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ analyses: safxAnalyses })
@@ -1312,7 +1312,7 @@ function gerarHTML(iteracoes) {
             modal.style.display = 'block';
 
             try {
-                const resp = await fetch('http://localhost:3001/api/zendesk/ticket?id=' + zendeskId);
+                const resp = await fetch('/api/zendesk/ticket?id=' + zendeskId);
                 const data = await resp.json();
 
                 if (!data.success) {
@@ -1352,7 +1352,7 @@ function gerarHTML(iteracoes) {
             body.innerHTML += '<div class="loading" style="margin-top:12px">⏳ Sincronizando com ADO...</div>';
 
             try {
-                const resp = await fetch('http://localhost:3001/api/zendesk/sync-to-ado', {
+                const resp = await fetch('/api/zendesk/sync-to-ado', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ workItemId: workItemId, zendeskTicketId: zendeskId, adoToken: '${token}' })

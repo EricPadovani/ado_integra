@@ -21,9 +21,10 @@ set "RFC_DLL=%~dp0..\nwrfcsdk"
 if exist "%RFC_DLL%" set "PATH=%RFC_DLL%;%PATH%"
 
 REM Mata instancia anterior do servidor na porta 3001
-for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr ":3001 "') do (
+for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr /R ":3001[^0-9]"') do (
     taskkill /PID %%a /F >nul 2>&1
 )
+timeout /t 1 /nobreak >nul
 
 echo [1/4] Liberando porta 3001 no firewall...
 netsh advfirewall firewall delete rule name="ADO Integra 3001" >nul 2>&1
@@ -69,6 +70,6 @@ echo.
 pause
 
 REM Ao fechar: mata o servidor
-for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr ":3001 "') do (
+for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr /R ":3001[^0-9]"') do (
     taskkill /PID %%a /F >nul 2>&1
 )

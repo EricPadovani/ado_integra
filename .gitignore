@@ -1,6 +1,10 @@
 # Credenciais e configurações locais
 .env
 
+# Claude Code (ferramenta de desenvolvimento)
+.claude/
+.superpowers/
+
 # Dependências Node
 node_modules/
 

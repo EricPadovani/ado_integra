@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação — ADO Iterations Manager</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f8;
+            color: #374151;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .page {
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        /* CAPA */
+        .cover {
+            background: linear-gradient(160deg, #1e4d8c 0%, #0d2137 100%);
+            color: white;
+            padding: 70px 60px 50px;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .cover-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 3px;
+            padding: 3px 10px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .cover h1 {
+            font-size: 2.2em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+        }
+
+        .cover h2 {
+            font-size: 1.1em;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        .cover-meta {
+            display: flex;
+            gap: 24px;
+            font-size: 12px;
+            opacity: 0.7;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 16px;
+        }
+
+        /* CONTEÚDO */
+        .content {
+            padding: 40px 60px;
+        }
+
+        /* Índice */
+        .toc {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin-bottom: 40px;
+        }
+
+        .toc h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c757d;
+            margin-bottom: 12px;
+        }
+
+        .toc ol {
+            padding-left: 18px;
+        }
+
+        .toc li {
+            margin: 5px 0;
+            font-size: 13px;
+        }
+
+        .toc a {
+            color: #1e4d8c;
+            text-decoration: none;
+        }
+
+        .toc a:hover { text-decoration: underline; }
+
+        /* Seções */
+        .section {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #1e4d8c;
+        }
+
+        .section-num {
+            background: #1e4d8c;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .section h2 {
+            font-size: 1.15em;
+            color: #1a3a5c;
+            font-weight: 700;
+        }
+
+        .section h3 {
+            font-size: 0.95em;
+            color: #374151;
+            font-weight: 700;
+            margin: 18px 0 8px;
+        }
+
+        p { margin-bottom: 10px; }
+
+        ul, ol {
+            padding-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        li { margin: 4px 0; }
+
+        /* Código inline */
+        code {
+            background: #e8edf2;
+            color: #1a3a5c;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        /* Bloco de código */
+        pre {
+            background: #1a2535;
+            color: #d4e1f0;
+            padding: 14px 16px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 11.5px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        /* Callouts */
+        .callout {
+            border-left: 3px solid;
+            padding: 10px 14px;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 12px;
+            font-size: 12px;
+        }
+
+        .callout-info {
+            background: #e3edf7;
+            border-color: #1e4d8c;
+            color: #1a3a5c;
+        }
+
+        .callout-warning {
+            background: #fff8e1;
+            border-color: #f59e0b;
+            color: #7c5a00;
+        }
+
+        .callout-success {
+            background: #e8f5e9;
+            border-color: #388e3c;
+            color: #1b5e20;
+        }
+
+        /* Tabelas */
+        table.doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 14px;
+            font-size: 12px;
+        }
+
+        .doc-table th {
+            background: #374151;
+            color: white;
+            padding: 7px 10px;
+            text-align: left;
+            font-size: 11px;
+        }
+
+        .doc-table td {
+            padding: 6px 10px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: top;
+        }
+
+        .doc-table tr:nth-child(even) td { background: #f8f9fa; }
+
+        /* Badge de status */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-blue { background: #dbeafe; color: #1e4d8c; }
+        .badge-green { background: #d4edda; color: #155724; }
+        .badge-yellow { background: #fff3cd; color: #856404; }
+        .badge-gray { background: #e9ecef; color: #495057; }
+
+        /* Diagrama de fluxo (ASCII) */
+        .flow-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 16px;
+            font-family: 'Consolas', monospace;
+            font-size: 11px;
+            white-space: pre;
+            overflow-x: auto;
+            margin-bottom: 12px;
+        }
+
+        /* Divisor de seção */
+        .divider {
+            height: 1px;
+            background: #e9ecef;
+            margin: 32px 0;
+        }
+
+        /* Rodapé */
+        .footer-bar {
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            padding: 14px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #6c757d;
+        }
+
+        /* Print */
+        @media print {
+            body { background: white; font-size: 12px; }
+            .page { box-shadow: none; margin: 0; border-radius: 0; max-width: 100%; }
+            .cover { padding: 50px 50px 40px; min-height: 260px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .content { padding: 30px 50px; }
+            .section { page-break-inside: avoid; }
+            pre, .flow-box { page-break-inside: avoid; }
+            .footer-bar { padding: 10px 50px; }
+            a { color: inherit; text-decoration: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- CAPA -->
+    <div class="cover">
+        <div class="cover-badge">Documentação Técnica</div>
+        <h1>ADO Iterations Manager</h1>
+        <h2>Sistema de Gestão de Iterações Azure DevOps com Análise IA + RFC SAP</h2>
+        <div class="cover-meta">
+            <span>Versão 1.0</span>
+            <span>Projeto: Mastersaf Interfaces</span>
+            <span>Gerado em: <span id="docDate"></span></span>
+            <span>Organização: tr-ggo</span>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO -->
+    <div class="content">
+
+        <!-- ÍNDICE -->
+        <div class="toc">
+            <h3>Índice</h3>
+            <ol>
+                <li><a href="#s1">Visão Geral</a></li>
+                <li><a href="#s2">Arquitetura e Tecnologias</a></li>
+                <li><a href="#s3">Configuração e Instalação</a></li>
+                <li><a href="#s4">Funcionalidades — Tela Principal</a></li>
+                <li><a href="#s5">Funcionalidades — Modal Work Items</a></li>
+                <li><a href="#s6">Funcionalidades — Análise IA</a></li>
+                <li><a href="#s7">Funcionalidade — Painel Pontos Ajustados</a></li>
+                <li><a href="#s8">API Endpoints (api-server.js)</a></li>
+                <li><a href="#s9">Fluxo de Dados</a></li>
+                <li><a href="#s10">Variáveis de Ambiente</a></li>
+            </ol>
+        </div>
+
+        <!-- 1. VISÃO GERAL -->
+        <div class="section" id="s1">
+            <div class="section-header">
+                <div class="section-num">1</div>
+                <h2>Visão Geral</h2>
+            </div>
+            <p>
+                O <strong>ADO Iterations Manager</strong> é uma aplicação Node.js que integra
+                <strong>Azure DevOps</strong>, <strong>SAP RFC</strong> e <strong>Inteligência Artificial (Claude API)</strong>
+                para fornecer uma visão consolidada das iterações (sprints) do projeto
+                <em>Mastersaf Interfaces</em>.
+            </p>
+            <p>
+                O sistema consulta a API REST do Azure DevOps, gera um relatório HTML interativo
+                e permite, a partir do browser, visualizar os Work Items de cada sprint, analisar
+                automaticamente processos SAP vinculados e obter uma análise de cobertura gerada
+                por IA.
+            </p>
+            <div class="callout callout-info">
+                <strong>Ponto de entrada:</strong> <code>busca_ado.js</code> — gera o arquivo
+                <code>iteracoes_ado.html</code> que é aberto diretamente no navegador.
+                Toda a interatividade posterior (chamadas ADO, SAP, IA) ocorre no frontend via fetch.
+            </div>
+        </div>
+
+        <!-- 2. ARQUITETURA -->
+        <div class="section" id="s2">
+            <div class="section-header">
+                <div class="section-num">2</div>
+                <h2>Arquitetura e Tecnologias</h2>
+            </div>
+
+            <div class="flow-box">┌─────────────────────────────────────────────────────────┐
+│                   busca_ado.js (Node.js)                    │
+│  • Consulta ADO API para listar iterações                  │
+│  • Gera HTML completo (CSS + JS inline)                    │
+│  • Salva iteracoes_ado.html                                │
+└────────────────────────┬────────────────────────────────────┘
+                         │ abre no browser
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│               iteracoes_ado.html (Browser)               │
+│  • Exibe tabela de iterações com filtros                 │
+│  • Modal: Work Items da Iteração (fetch ADO)             │
+│  • Modal: Análise IA                                     │
+│      ├─ fetch ADO (detalhes + comentários)               │
+│      ├─ fetch localhost:3001/api/analise (SAP RFC)       │
+│      ├─ fetch localhost:3001/api/ia-analise (Claude AI)  │
+│      └─ Painel Pontos Ajustados (fetch ADO refs)         │
+└─────────────────────────────────────────────────────────┘</div>
+
+            <table class="doc-table">
+                <thead>
+                    <tr>
+                        <th>Camada</th>
+                        <th>Tecnologia</th>
+                        <th>Responsabilidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Backend Gerador</td>
+                        <td>Node.js 18+ / <code>axios</code>, <code>dotenv</code>, <code>fs</code></td>
+                        <td>Consulta ADO API e gera HTML estático</td>
+                    </tr>
+                    <tr>
+                        <td>Frontend</td>
+                        <td>HTML5 / CSS3 / JavaScript Vanilla</td>
+                        <td>Exibição, filtros, modais e chamadas de API em runtime</td>
+                    </tr>
+                    <tr>
+                        <td>API Middleware</td>
+                        <td><code>api-server.js</code> — Express em localhost:3001</td>
+                        <td>Proxied SAP RFC + análise via Claude API (evita CORS)</td>
+                    </tr>
+                    <tr>
+                        <td>ADO API</td>
+                        <td>Azure DevOps REST API v7.0</td>
+                        <td>Iterações, Work Items, comentários</td>
+                    </tr>
+                    <tr>
+                        <td>SAP</td>
+                        <td>RFC <code>Z_IN_PGM</code> via <code>sap-mcp-server</code></td>
+                        <td>Código-fonte do processo ABAP</td>
+                    </tr>
+                    <tr>
+                        <td>IA</td>
+                        <td>Claude API (Anthropic)</td>
+                        <td>Análise de cobertura entre spec ADO e código SAP</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 3. CONFIGURAÇÃO -->
+        <div class="section" id="s3">
+            <div class="section-header">
+                <div class="section-num">3</div>
+                <h2>Configuração e Instalação</h2>
+            </div>
+
+            <h3>Pré-requisitos</h3>
+            <ul>
+                <li>Node.js 18 ou superior</li>
+                <li>Acesso à organização Azure DevOps <code>tr-ggo</code></li>
+                <li>Token PAT do Azure DevOps com permissão de leitura em Work Items</li>
+                <li>Servidor <code>api-server.js</code> em execução na porta 3001 (para Análise IA)</li>
+            </ul>
+
+            <h3>Instalação de Dependências</h3>
+            <pre>cd C:/vscode/ado
+npm install</pre>
+
+            <h3>Variável de Ambiente</h3>
+            <p>Criar arquivo <code>.env</code> na raiz do projeto:</p>
+            <pre>ADO_TOKEN=&lt;seu-token-PAT-em-base64&gt;</pre>
+
+            <div class="callout callout-warning">
+                O token deve ser codificado em Base64 no formato <code>:&lt;PAT&gt;</code>
+                (dois-pontos antes do PAT), como exige a autenticação Basic do Azure DevOps.
+            </div>
+
+            <h3>Execução</h3>
+            <pre># Gerar o relatório HTML
+node busca_ado.js
+
+# Iniciar o servidor de API (para Análise IA)
+node api-server.js   # ou via iniciar.bat</pre>
+        </div>
+
+        <!-- 4. TELA PRINCIPAL -->
+        <div class="section" id="s4">
+            <div class="section-header">
+                <div class="section-num">4</div>
+                <h2>Funcionalidades — Tela Principal</h2>
+            </div>
+            <p>
+                Ao executar <code>node busca_ado.js</code>, o arquivo
+                <code>iteracoes_ado.html</code> é gerado e pode ser aberto no navegador.
+            </p>
+
+            <h3>Header com Estatísticas</h3>
+            <p>O cabeçalho exibe o nome do projeto e badges com contagens:</p>
+            <ul>
+                <li><strong>Total</strong> — número total de iterações encontradas</li>
+                <li><strong>Concluídas</strong> — iterações com <code>timeFrame = past</code></li>
+                <li><strong>Atual</strong> — iteração com <code>timeFrame = current</code></li>
+                <li><strong>Futuras</strong> — iterações com <code>timeFrame = future</code></li>
+            </ul>
+
+            <h3>Filtros de Status</h3>
+            <p>Botões de filtro rápido na barra superior da tabela:</p>
+            <table class="doc-table">
+                <thead>
+                    <tr><th>Botão</th><th>Comportamento</th><th>Padrão ativo?</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Todas</td><td>Exibe todas as iterações</td><td>Não</td></tr>
+                    <tr><td>Concluídas</td><td>Exibe apenas iterações passadas (<code>past</code>)</td><td>Não</td></tr>
+                    <tr><td>Atuais</td><td>Exibe apenas a iteração corrente (<code>current</code>)</td><td><strong>Sim</strong></td></tr>
+                    <tr><td>Futuras</td><td>Exibe apenas iterações futuras (<code>future</code>)</td><td>Não</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Tabela de Iterações</h3>
+            <p>Colunas exibidas:</p>
+            <ul>
+                <li><strong>#</strong> — número sequencial</li>
+                <li><strong>Nome da Iteração</strong> — nome do sprint</li>
+                <li><strong>Caminho</strong> — path no ADO, com prefixo <code>Mastersaf Interfaces\</code> removido; clicável para abrir o modal de Work Items</li>
+                <li><strong>Data Início / Data Fim</strong> — formatadas no padrão <code>dd/mm/aaaa</code></li>
+                <li><strong>Status</strong> — badge colorido: verde (Concluída), amarelo (Atual), azul (Futura)</li>
+                <li><strong>Link</strong> — link direto para a iteração no portal Azure DevOps</li>
+            </ul>
+
+            <h3>Rodapé</h3>
+            <p>Exibe data/hora de geração do arquivo e a origem dos dados (Azure DevOps API).</p>
+        </div>
+
+        <!-- 5. MODAL WORK ITEMS -->
+        <div class="section" id="s5">
+            <div class="section-header">
+                <div class="section-num">5</div>
+                <h2>Funcionalidades — Modal Work Items</h2>
+            </div>
+            <p>
+                Ao clicar no <strong>Caminho</strong> de uma iteração, um modal é aberto com os
+                Work Items daquela sprint. Apenas itens do tipo <strong>User Story</strong> são exibidos.
+            </p>
+
+            <h3>Fluxo de Carregamento</h3>
+            <ol>
+                <li>Requisição à API ADO: <code>iterations/{id}/workitems</code> para obter a lista de IDs</li>
+                <li>Para cada ID: requisição a <code>/wit/workitems/{id}</code> para buscar detalhes</li>
+                <li>Filtro client-side: apenas <code>System.WorkItemType === 'User Story'</code></li>
+                <li>Exibição em tabela com contagem de User Stories encontradas</li>
+            </ol>
+
+            <h3>Colunas da Tabela de Work Items</h3>
+            <table class="doc-table">
+                <thead>
+                    <tr><th>Coluna</th><th>Descrição</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>ID</td><td>ID numérico clicável (exibe alert com ID e título — ponto de extensão para futuras integrações)</td></tr>
+                    <tr><td>Tipo</td><td>Tipo do Work Item (sempre User Story nesta view)</td></tr>
+                    <tr><td>Título</td><td>Título da User Story</td></tr>
+                    <tr><td>Estado</td><td>Estado atual no ADO (Active, Resolved, Closed, etc.)</td></tr>
+                    <tr><td>Link</td><td>Link direto para o item no portal Azure DevOps</td></tr>
+                    <tr><td>Análise IA</td><td>Botão <strong>🤖 ANÁLISE IA</strong> para abrir modal de análise</td></tr>
+                </tbody>
+            </table>
+
+            <div class="callout callout-info">
+                Em caso de erro ao carregar um work item específico, a linha exibe "Não foi possível
+                carregar" e um link direto para o Azure, garantindo que o modal não trave.
+            </div>
+        </div>
+
+        <!-- 6. ANÁLISE IA -->
+        <div class="section" id="s6">
+            <div class="section-header">
+                <div class="section-num">6</div>
+                <h2>Funcionalidades — Análise IA</h2>
+            </div>
+            <p>
+                O modal de Análise IA realiza uma análise automatizada cruzando a especificação
+                da User Story (ADO) com o código-fonte SAP (via RFC) e gera um parecer com IA.
+            </p>
+
+            <h3>Etapas do Fluxo</h3>
+            <ol>
+                <li>
+                    <strong>Busca detalhes ADO</strong> — campos <code>System.Title</code>,
+                    <code>System.State</code>, <code>System.Description</code>, <code>System.AssignedTo</code>,
+                    <code>System.IterationPath</code>
+                </li>
+                <li>
+                    <strong>Extrai código ZSAFE dos comentários</strong> — busca comentários do Work Item
+                    e extrai padrões <code>Processo: ZSAFE...</code> via regex
+                    <code>/Processo:\s*(\S+)/gi</code>
+                </li>
+                <li>
+                    <strong>Consulta RFC SAP</strong> — chama <code>localhost:3001/api/analise</code>
+                    com o workItemId e o código ZSAFE; o servidor executa a RFC <code>Z_IN_PGM</code>
+                </li>
+                <li>
+                    <strong>Análise com IA</strong> — envia spec ADO + código SAP para
+                    <code>localhost:3001/api/ia-analise</code>, que retorna análise formatada em Markdown
+                </li>
+                <li>
+                    <strong>Renderização</strong> — a função <code>formatarAnaliseIA()</code> converte
+                    o Markdown (## títulos, listas) para HTML formatado
+                </li>
+            </ol>
+
+            <h3>Caso de ZSAFE não encontrado</h3>
+            <p>
+                Se nenhum padrão <code>Processo: ZSAFE...</code> for encontrado nos comentários,
+                o modal exibe um formulário para que o usuário informe manualmente o código.
+                A função <code>reConsultarZsafe()</code> reexecuta o fluxo com o código informado.
+            </p>
+
+            <h3>Suporte a múltiplos ZSAFEs</h3>
+            <p>
+                Se mais de um código for detectado nos comentários, o sistema itera sobre todos,
+                exibindo a análise SAP + IA de cada um em sequência.
+            </p>
+
+            <h3>Resultado exibido</h3>
+            <table class="doc-table">
+                <thead>
+                    <tr><th>Seção</th><th>Origem</th><th>Estilo</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>🔵 Azure DevOps</td><td>ADO API</td><td>Card azul com tabela de detalhes</td></tr>
+                    <tr><td>❌ Erros SAP/IA</td><td>Servidor local</td><td>Card vermelho com mensagem</td></tr>
+                    <tr><td>🤖 Análise IA</td><td>Claude API via servidor</td><td>Card cinza-azulado com conteúdo Markdown renderizado</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 7. PAINEL PONTOS AJUSTADOS -->
+        <div class="section" id="s7">
+            <div class="section-header">
+                <div class="section-num">7</div>
+                <h2>Funcionalidade — Painel Pontos Ajustados</h2>
+            </div>
+            <div class="callout callout-yellow">
+                <strong>Status:</strong> Implementação planejada (plano em
+                <code>docs/superpowers/plans/2026-03-31-pontos-ajustados-panel.md</code>)
+            </div>
+
+            <p>
+                Quando a RFC <code>Z_IN_PGM</code> retornar números de Work Items ADO nos campos
+                <code>O_FONTEFF</code>, <code>O_FONTEFS</code> ou <code>O_FONTEFM</code>,
+                o modal de Análise IA exibirá um <strong>painel lateral direito</strong> com
+                cards dos work items referenciados.
+            </p>
+
+            <h3>Layout 2 Colunas</h3>
+            <p>
+                O modal passa a ter estrutura de 2 colunas:
+            </p>
+            <ul>
+                <li><strong>Coluna esquerda (55%)</strong> — análise existente (SAP + IA + detalhes ADO)</li>
+                <li><strong>Coluna direita (42%)</strong> — cards dos Work Items referenciados nos campos RFC</li>
+            </ul>
+
+            <h3>Cards de Work Item Referenciado</h3>
+            <p>Cada card exibe:</p>
+            <ul>
+                <li>Campo de origem (<code>O_FONTEFF</code>, <code>O_FONTEFS</code> ou <code>O_FONTEFM</code>) e ID do Work Item</li>
+                <li>Título, Tipo, Estado, Responsável, Sprint</li>
+                <li>Link direto para o Azure DevOps</li>
+            </ul>
+
+            <h3>Comportamento adaptativo</h3>
+            <ul>
+                <li>Se <strong>todos os campos estiverem vazios ou zerados</strong>: coluna direita é ocultada (<code>display:none</code>), mantendo layout original de 1 coluna</li>
+                <li>Em telas menores (&lt; 768px): layout empilhado verticalmente via media query</li>
+            </ul>
+
+            <h3>Função responsável</h3>
+            <p>
+                <code>renderPontosAjustados(container, sapData, adoToken)</code> — função assíncrona
+                que recebe os dados SAP parseados, detecta os campos, busca os Work Items na ADO API
+                e renderiza os cards no container da coluna direita.
+            </p>
+        </div>
+
+        <!-- 8. API ENDPOINTS -->
+        <div class="section" id="s8">
+            <div class="section-header">
+                <div class="section-num">8</div>
+                <h2>API Endpoints (api-server.js)</h2>
+            </div>
+            <p>
+                O servidor Express local (<code>localhost:3001</code>) atua como proxy para evitar
+                problemas de CORS e para manter as credenciais SAP/Claude fora do browser.
+            </p>
+
+            <table class="doc-table">
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Método</th>
+                        <th>Parâmetros</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>/api/analise</code></td>
+                        <td>GET</td>
+                        <td><code>workItemId</code>, <code>iZsafe</code></td>
+                        <td>Executa RFC <code>Z_IN_PGM</code> no SAP e retorna o código-fonte do processo</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/ia-analise</code></td>
+                        <td>POST</td>
+                        <td>JSON: <code>adoSpec</code>, <code>sapCode</code>, <code>zsafe</code>, <code>workItemId</code></td>
+                        <td>Envia especificação + código para Claude API e retorna análise em Markdown</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Resposta de sucesso</h3>
+            <pre>// GET /api/analise
+{ "success": true, "data": { /* objeto RFC */ } }
+
+// POST /api/ia-analise
+{ "success": true, "analysis": "## Cobertura\n- ..." }</pre>
+
+            <h3>Resposta de erro</h3>
+            <pre>{ "success": false, "error": "mensagem de erro" }</pre>
+
+            <div class="callout callout-info">
+                O servidor deve estar em execução antes de usar o botão "🤖 ANÁLISE IA" no browser.
+                Execute com <code>node api-server.js</code> ou use o atalho <code>iniciar.bat</code>.
+            </div>
+        </div>
+
+        <!-- 9. FLUXO DE DADOS -->
+        <div class="section" id="s9">
+            <div class="section-header">
+                <div class="section-num">9</div>
+                <h2>Fluxo de Dados</h2>
+            </div>
+
+            <h3>Geração do Relatório (busca_ado.js)</h3>
+            <div class="flow-box">1. Lê ADO_TOKEN do .env
+2. GET /work/teamsettings/iterations?api-version=7.0
+3. Recebe lista de iterações com: id, name, path, startDate, finishDate, timeFrame
+4. gerarHTML(dados) → template HTML completo com CSS e JS inline
+5. salvarHTML(html, 'iteracoes_ado.html') → grava no disco
+6. exibirTabela(dados) → exibe console.table no terminal
+7. selecionarIteracao(dados) → aguarda input do usuário (extensível)</div>
+
+            <h3>Análise IA (browser → api-server)</h3>
+            <div class="flow-box">Browser: clique em 🤖 ANÁLISE IA
+  │
+  ├─ GET ADO /wit/workitems/{id}?$expand=all
+  │    └─ extrai: title, state, description, assignedTo, iteration
+  │
+  ├─ GET ADO /wit/workitems/{id}/comments
+  │    └─ regex: Processo: ZSAFE... → zsafeCodes[]
+  │
+  ├─ [se zsafeCodes.length === 0] → exibe formulário manual
+  │
+  └─ para cada zsafe em zsafeCodes:
+       ├─ GET localhost:3001/api/analise?workItemId=X&iZsafe=ZSAFE
+       │    └─ SAP RFC Z_IN_PGM → retorna sapCode (JSON)
+       │
+       ├─ POST localhost:3001/api/ia-analise
+       │    body: { adoSpec, sapCode, zsafe, workItemId }
+       │    └─ Claude API → análise Markdown
+       │
+       └─ renderiza: card SAP + card IA + card ADO
+            + [se O_FONTEFF/S/M preenchidos] → renderPontosAjustados()</div>
+        </div>
+
+        <!-- 10. VARIÁVEIS DE AMBIENTE -->
+        <div class="section" id="s10">
+            <div class="section-header">
+                <div class="section-num">10</div>
+                <h2>Variáveis de Ambiente</h2>
+            </div>
+
+            <table class="doc-table">
+                <thead>
+                    <tr>
+                        <th>Variável</th>
+                        <th>Onde usada</th>
+                        <th>Formato</th>
+                        <th>Obrigatória?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>ADO_TOKEN</code></td>
+                        <td><code>busca_ado.js</code> (geração) e embutida no HTML para chamadas browser</td>
+                        <td>Base64 de <code>:&lt;PAT&gt;</code></td>
+                        <td><span class="badge badge-green">Sim</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="callout callout-warning">
+                <strong>Atenção de segurança:</strong> O <code>ADO_TOKEN</code> é embutido diretamente
+                no HTML gerado para permitir as chamadas de API do browser. O arquivo
+                <code>iteracoes_ado.html</code> deve ser tratado como documento sensível e não deve
+                ser publicado ou compartilhado em repositórios públicos.
+            </div>
+
+            <h3>Variáveis no api-server.js</h3>
+            <p>
+                O servidor de API gerencia separadamente as credenciais SAP e a chave da Claude API.
+                Consulte o arquivo <code>api-server.js</code> ou seu próprio <code>.env</code>
+                para as variáveis específicas daquele serviço.
+            </p>
+        </div>
+
+    </div><!-- /content -->
+
+    <div class="footer-bar">
+        <span>ADO Iterations Manager — Documentação Técnica v1.0</span>
+        <span id="footerDate"></span>
+    </div>
+</div>
+
+<script>
+    const now = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+    document.getElementById('docDate').textContent = now;
+    document.getElementById('footerDate').textContent = now;
+</script>
+</body>
+</html>

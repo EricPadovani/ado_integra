@@ -1,0 +1,10 @@
+# Credenciais e configurações locais
+.env
+
+# Dependências Node
+node_modules/
+
+# Logs
+*.log
+_noderfc.log
+dev_rfc.log

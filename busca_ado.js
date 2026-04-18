@@ -448,10 +448,10 @@ function gerarHTML(iteracoes) {
             Selecione <strong>Area Path</strong> e <strong>Iteration Path</strong> acima e clique em <strong>Filtrar</strong> para ver as iterações.
         </div>
         <div class="filters" id="statusFilters" style="display:none">
-            <button class="filter-btn" onclick="filterTable('all', this)">Todas</button>
-            <button class="filter-btn" onclick="filterTable('past', this)">Concluídas</button>
-            <button class="filter-btn active" onclick="filterTable('current', this)">Atuais</button>
-            <button class="filter-btn" onclick="filterTable('future', this)">Futuras</button>
+            <button class="filter-btn" data-status="all" onclick="filterTable('all', this)">Todas</button>
+            <button class="filter-btn" data-status="past" onclick="filterTable('past', this)">Concluídas</button>
+            <button class="filter-btn active" data-status="current" onclick="filterTable('current', this)">Atuais</button>
+            <button class="filter-btn" data-status="future" onclick="filterTable('future', this)">Futuras</button>
         </div>
 
         <div class="table-container" style="display:none">
@@ -616,7 +616,7 @@ function gerarHTML(iteracoes) {
             document.querySelector('.table-container').style.display = '';
             document.getElementById('statusFilters').style.display = '';
             const activeBtn = document.querySelector('.filter-btn.active');
-            const status = activeBtn ? (activeBtn.getAttribute('onclick').match(/'([^']+)'/) || [])[1] || 'all' : 'all';
+            const status = activeBtn ? (activeBtn.dataset.status || 'all') : 'all';
             const rows = document.querySelectorAll('#iterationsTable tbody tr');
             rows.forEach(function(row) {
                 const matchesStatus = status === 'all' || row.dataset.status === status;

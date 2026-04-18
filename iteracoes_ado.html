@@ -334,14 +334,34 @@
             </div>
         </div>
 
-        <div class="filters">
+        <div id="filterBar" style="background:#f0f4ff;border-bottom:2px solid #c7d6f5;padding:12px 20px;">
+            <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;">
+                <div>
+                    <div style="font-size:10px;font-weight:700;color:#1e4d8c;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;">Area Path</div>
+                    <div id="areaCascade" style="display:flex;gap:6px;align-items:center;"></div>
+                </div>
+                <div>
+                    <div style="font-size:10px;font-weight:700;color:#1e4d8c;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;">Iteration Path</div>
+                    <div id="iterationCascade" style="display:flex;gap:6px;align-items:center;"></div>
+                </div>
+                <div style="display:flex;gap:6px;padding-bottom:1px;">
+                    <button onclick="applyFilter()" style="background:#1e4d8c;color:white;border:none;border-radius:5px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;">Filtrar</button>
+                    <button onclick="clearFilter()" style="background:none;border:1px solid #aaa;border-radius:5px;padding:8px 14px;font-size:12px;color:#666;cursor:pointer;">Limpar</button>
+                </div>
+            </div>
+        </div>
+        <div id="tableHiddenBanner" style="padding:48px;text-align:center;color:#aaa;font-size:13px;background:#fafafa;border-top:1px dashed #ddd;">
+            <span style="font-size:32px;display:block;margin-bottom:10px;">🔍</span>
+            Selecione <strong>Area Path</strong> e <strong>Iteration Path</strong> acima e clique em <strong>Filtrar</strong> para ver as iterações.
+        </div>
+        <div class="filters" id="statusFilters" style="display:none">
             <button class="filter-btn" onclick="filterTable('all', this)">Todas</button>
             <button class="filter-btn" onclick="filterTable('past', this)">Concluídas</button>
             <button class="filter-btn active" onclick="filterTable('current', this)">Atuais</button>
             <button class="filter-btn" onclick="filterTable('future', this)">Futuras</button>
         </div>
 
-        <div class="table-container">
+        <div class="table-container" style="display:none">
             <table id="iterationsTable">
                 <thead>
                     <tr>
@@ -355,721 +375,721 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q1\2025_S01_Jan01-Jan14" style="display:none">
                         <td>1</td>
                         <td>2025_S01_Jan01-Jan14</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('7aa621cb-2789-486d-863f-f8f871d27153', '2025_S01_Jan01-Jan14')">2025\Q1\2025_S01_Jan01-Jan14</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('7aa621cb-2789-486d-863f-f8f871d27153', '2025_S01_Jan01-Jan14', selectedAreaPath)">2025\Q1\2025_S01_Jan01-Jan14</a></td>
                         <td>31/12/2024</td>
                         <td>13/01/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/7aa621cb-2789-486d-863f-f8f871d27153" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q1" style="display:none">
                         <td>2</td>
                         <td>Q1</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('03737470-99fb-4fe3-bd19-8270597517ad', 'Q1')">2025\Q1</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('03737470-99fb-4fe3-bd19-8270597517ad', 'Q1', selectedAreaPath)">2025\Q1</a></td>
                         <td>31/12/2024</td>
                         <td>30/03/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/03737470-99fb-4fe3-bd19-8270597517ad" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025" style="display:none">
                         <td>3</td>
                         <td>2025</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('a6474148-b3d0-45ae-9761-babff4042978', '2025')">2025</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('a6474148-b3d0-45ae-9761-babff4042978', '2025', selectedAreaPath)">2025</a></td>
                         <td>31/12/2024</td>
                         <td>29/12/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/a6474148-b3d0-45ae-9761-babff4042978" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q1\2025_S02_Jan15-Jan28" style="display:none">
                         <td>4</td>
                         <td>2025_S02_Jan15-Jan28</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('a4ab5a70-9c1c-4bfc-ac64-40cdc0444214', '2025_S02_Jan15-Jan28')">2025\Q1\2025_S02_Jan15-Jan28</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('a4ab5a70-9c1c-4bfc-ac64-40cdc0444214', '2025_S02_Jan15-Jan28', selectedAreaPath)">2025\Q1\2025_S02_Jan15-Jan28</a></td>
                         <td>14/01/2025</td>
                         <td>27/01/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/a4ab5a70-9c1c-4bfc-ac64-40cdc0444214" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q1\2025_S03_Jan29-Feb11" style="display:none">
                         <td>5</td>
                         <td>2025_S03_Jan29-Feb11</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('05f0c18d-83f2-43e6-887b-97073795941d', '2025_S03_Jan29-Feb11')">2025\Q1\2025_S03_Jan29-Feb11</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('05f0c18d-83f2-43e6-887b-97073795941d', '2025_S03_Jan29-Feb11', selectedAreaPath)">2025\Q1\2025_S03_Jan29-Feb11</a></td>
                         <td>28/01/2025</td>
                         <td>10/02/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/05f0c18d-83f2-43e6-887b-97073795941d" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q1\2025_S04_Feb12-Feb25" style="display:none">
                         <td>6</td>
                         <td>2025_S04_Feb12-Feb25</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('9f515d27-22ac-462e-aa5b-6cf7caab47ad', '2025_S04_Feb12-Feb25')">2025\Q1\2025_S04_Feb12-Feb25</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('9f515d27-22ac-462e-aa5b-6cf7caab47ad', '2025_S04_Feb12-Feb25', selectedAreaPath)">2025\Q1\2025_S04_Feb12-Feb25</a></td>
                         <td>11/02/2025</td>
                         <td>24/02/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/9f515d27-22ac-462e-aa5b-6cf7caab47ad" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q1\2025_S05_Feb26-Mar11" style="display:none">
                         <td>7</td>
                         <td>2025_S05_Feb26-Mar11</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('8f4af02d-435f-4683-8e1f-e31f16e70f5a', '2025_S05_Feb26-Mar11')">2025\Q1\2025_S05_Feb26-Mar11</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('8f4af02d-435f-4683-8e1f-e31f16e70f5a', '2025_S05_Feb26-Mar11', selectedAreaPath)">2025\Q1\2025_S05_Feb26-Mar11</a></td>
                         <td>25/02/2025</td>
                         <td>10/03/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/8f4af02d-435f-4683-8e1f-e31f16e70f5a" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q1\2025_S06_Mar12-Mar25" style="display:none">
                         <td>8</td>
                         <td>2025_S06_Mar12-Mar25</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('2107bda4-1ec6-4da5-8e6c-6940652ce1fc', '2025_S06_Mar12-Mar25')">2025\Q1\2025_S06_Mar12-Mar25</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('2107bda4-1ec6-4da5-8e6c-6940652ce1fc', '2025_S06_Mar12-Mar25', selectedAreaPath)">2025\Q1\2025_S06_Mar12-Mar25</a></td>
                         <td>11/03/2025</td>
                         <td>24/03/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/2107bda4-1ec6-4da5-8e6c-6940652ce1fc" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q2\2025_S07_Mar26-Apr08" style="display:none">
                         <td>9</td>
                         <td>2025_S07_Mar26-Apr08</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('57bd78ad-e4a9-41be-ad48-e9a1165ceb9b', '2025_S07_Mar26-Apr08')">2025\Q2\2025_S07_Mar26-Apr08</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('57bd78ad-e4a9-41be-ad48-e9a1165ceb9b', '2025_S07_Mar26-Apr08', selectedAreaPath)">2025\Q2\2025_S07_Mar26-Apr08</a></td>
                         <td>25/03/2025</td>
                         <td>07/04/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/57bd78ad-e4a9-41be-ad48-e9a1165ceb9b" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q2\2025_S08_Apr09-Apr22" style="display:none">
                         <td>10</td>
                         <td>2025_S08_Apr09-Apr22</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('5053fc59-7c42-445c-9ba8-0dfa57fc6e91', '2025_S08_Apr09-Apr22')">2025\Q2\2025_S08_Apr09-Apr22</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('5053fc59-7c42-445c-9ba8-0dfa57fc6e91', '2025_S08_Apr09-Apr22', selectedAreaPath)">2025\Q2\2025_S08_Apr09-Apr22</a></td>
                         <td>08/04/2025</td>
                         <td>21/04/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/5053fc59-7c42-445c-9ba8-0dfa57fc6e91" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q2\2025_S09_Apr23-May06" style="display:none">
                         <td>11</td>
                         <td>2025_S09_Apr23-May06</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('bd128303-89b5-4646-b6a4-d879ca3436ae', '2025_S09_Apr23-May06')">2025\Q2\2025_S09_Apr23-May06</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('bd128303-89b5-4646-b6a4-d879ca3436ae', '2025_S09_Apr23-May06', selectedAreaPath)">2025\Q2\2025_S09_Apr23-May06</a></td>
                         <td>22/04/2025</td>
                         <td>05/05/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/bd128303-89b5-4646-b6a4-d879ca3436ae" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q2\2025_S10_May07-May20" style="display:none">
                         <td>12</td>
                         <td>2025_S10_May07-May20</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('5419c209-31b6-4351-b7b2-085572a7a2d9', '2025_S10_May07-May20')">2025\Q2\2025_S10_May07-May20</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('5419c209-31b6-4351-b7b2-085572a7a2d9', '2025_S10_May07-May20', selectedAreaPath)">2025\Q2\2025_S10_May07-May20</a></td>
                         <td>06/05/2025</td>
                         <td>19/05/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/5419c209-31b6-4351-b7b2-085572a7a2d9" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q2\2025_S11_May21-Jun03" style="display:none">
                         <td>13</td>
                         <td>2025_S11_May21-Jun03</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('41c6871b-034b-4f7d-a051-4bd61108b6b9', '2025_S11_May21-Jun03')">2025\Q2\2025_S11_May21-Jun03</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('41c6871b-034b-4f7d-a051-4bd61108b6b9', '2025_S11_May21-Jun03', selectedAreaPath)">2025\Q2\2025_S11_May21-Jun03</a></td>
                         <td>20/05/2025</td>
                         <td>02/06/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/41c6871b-034b-4f7d-a051-4bd61108b6b9" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q2\2025_S12_Jun04-Jun17" style="display:none">
                         <td>14</td>
                         <td>2025_S12_Jun04-Jun17</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('a344b161-6986-4f11-83ec-3db9d9ca8265', '2025_S12_Jun04-Jun17')">2025\Q2\2025_S12_Jun04-Jun17</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('a344b161-6986-4f11-83ec-3db9d9ca8265', '2025_S12_Jun04-Jun17', selectedAreaPath)">2025\Q2\2025_S12_Jun04-Jun17</a></td>
                         <td>03/06/2025</td>
                         <td>16/06/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/a344b161-6986-4f11-83ec-3db9d9ca8265" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q2\2025_S13_Jun18-Jul01" style="display:none">
                         <td>15</td>
                         <td>2025_S13_Jun18-Jul01</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('f02dbc1d-5b04-46d2-a49f-51f12bc0e2b4', '2025_S13_Jun18-Jul01')">2025\Q2\2025_S13_Jun18-Jul01</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('f02dbc1d-5b04-46d2-a49f-51f12bc0e2b4', '2025_S13_Jun18-Jul01', selectedAreaPath)">2025\Q2\2025_S13_Jun18-Jul01</a></td>
                         <td>17/06/2025</td>
                         <td>30/06/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/f02dbc1d-5b04-46d2-a49f-51f12bc0e2b4" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q3\2025_S14_Jul02-Jul15" style="display:none">
                         <td>16</td>
                         <td>2025_S14_Jul02-Jul15</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('f0208ddf-0efb-44df-8ce1-92faf738ea51', '2025_S14_Jul02-Jul15')">2025\Q3\2025_S14_Jul02-Jul15</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('f0208ddf-0efb-44df-8ce1-92faf738ea51', '2025_S14_Jul02-Jul15', selectedAreaPath)">2025\Q3\2025_S14_Jul02-Jul15</a></td>
                         <td>01/07/2025</td>
                         <td>14/07/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/f0208ddf-0efb-44df-8ce1-92faf738ea51" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q3\2025_S15_Jul16-Jul29" style="display:none">
                         <td>17</td>
                         <td>2025_S15_Jul16-Jul29</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('1b4429a6-b511-4b3f-81ef-6e7591bcb011', '2025_S15_Jul16-Jul29')">2025\Q3\2025_S15_Jul16-Jul29</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('1b4429a6-b511-4b3f-81ef-6e7591bcb011', '2025_S15_Jul16-Jul29', selectedAreaPath)">2025\Q3\2025_S15_Jul16-Jul29</a></td>
                         <td>15/07/2025</td>
                         <td>28/07/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/1b4429a6-b511-4b3f-81ef-6e7591bcb011" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q3\2025_S16_Jul30-Aug12" style="display:none">
                         <td>18</td>
                         <td>2025_S16_Jul30-Aug12</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('8832450e-3a1b-4f52-8ef4-5ce78442a9db', '2025_S16_Jul30-Aug12')">2025\Q3\2025_S16_Jul30-Aug12</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('8832450e-3a1b-4f52-8ef4-5ce78442a9db', '2025_S16_Jul30-Aug12', selectedAreaPath)">2025\Q3\2025_S16_Jul30-Aug12</a></td>
                         <td>29/07/2025</td>
                         <td>11/08/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/8832450e-3a1b-4f52-8ef4-5ce78442a9db" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q3\2025_S17_Aug13-Aug26" style="display:none">
                         <td>19</td>
                         <td>2025_S17_Aug13-Aug26</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('29792ac9-9134-446c-8e17-e2da6957f8de', '2025_S17_Aug13-Aug26')">2025\Q3\2025_S17_Aug13-Aug26</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('29792ac9-9134-446c-8e17-e2da6957f8de', '2025_S17_Aug13-Aug26', selectedAreaPath)">2025\Q3\2025_S17_Aug13-Aug26</a></td>
                         <td>12/08/2025</td>
                         <td>25/08/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/29792ac9-9134-446c-8e17-e2da6957f8de" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q3\2025_S18_Aug27-Sep09" style="display:none">
                         <td>20</td>
                         <td>2025_S18_Aug27-Sep09</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('21c3922a-3603-4264-b3c1-959b9553efe1', '2025_S18_Aug27-Sep09')">2025\Q3\2025_S18_Aug27-Sep09</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('21c3922a-3603-4264-b3c1-959b9553efe1', '2025_S18_Aug27-Sep09', selectedAreaPath)">2025\Q3\2025_S18_Aug27-Sep09</a></td>
                         <td>26/08/2025</td>
                         <td>08/09/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/21c3922a-3603-4264-b3c1-959b9553efe1" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q3\2025_S19_Sep10-Sep23" style="display:none">
                         <td>21</td>
                         <td>2025_S19_Sep10-Sep23</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('ecb11be5-0557-475c-8515-2297b4c50f3c', '2025_S19_Sep10-Sep23')">2025\Q3\2025_S19_Sep10-Sep23</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('ecb11be5-0557-475c-8515-2297b4c50f3c', '2025_S19_Sep10-Sep23', selectedAreaPath)">2025\Q3\2025_S19_Sep10-Sep23</a></td>
                         <td>09/09/2025</td>
                         <td>22/09/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/ecb11be5-0557-475c-8515-2297b4c50f3c" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q3\2025_S20_Sep24-Oct07" style="display:none">
                         <td>22</td>
                         <td>2025_S20_Sep24-Oct07</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('7073366d-8c51-4d58-80a0-b53d06768dcb', '2025_S20_Sep24-Oct07')">2025\Q3\2025_S20_Sep24-Oct07</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('7073366d-8c51-4d58-80a0-b53d06768dcb', '2025_S20_Sep24-Oct07', selectedAreaPath)">2025\Q3\2025_S20_Sep24-Oct07</a></td>
                         <td>23/09/2025</td>
                         <td>06/10/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/7073366d-8c51-4d58-80a0-b53d06768dcb" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q4\2025_S21_Oct08-Oct21" style="display:none">
                         <td>23</td>
                         <td>2025_S21_Oct08-Oct21</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('4e4756cb-ac35-4032-8420-b237878c1964', '2025_S21_Oct08-Oct21')">2025\Q4\2025_S21_Oct08-Oct21</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('4e4756cb-ac35-4032-8420-b237878c1964', '2025_S21_Oct08-Oct21', selectedAreaPath)">2025\Q4\2025_S21_Oct08-Oct21</a></td>
                         <td>07/10/2025</td>
                         <td>20/10/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/4e4756cb-ac35-4032-8420-b237878c1964" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q4\2025_S22_Oct22-Nov04" style="display:none">
                         <td>24</td>
                         <td>2025_S22_Oct22-Nov04</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('c9655c38-91dc-40ed-803c-a9ce250916c7', '2025_S22_Oct22-Nov04')">2025\Q4\2025_S22_Oct22-Nov04</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('c9655c38-91dc-40ed-803c-a9ce250916c7', '2025_S22_Oct22-Nov04', selectedAreaPath)">2025\Q4\2025_S22_Oct22-Nov04</a></td>
                         <td>21/10/2025</td>
                         <td>03/11/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/c9655c38-91dc-40ed-803c-a9ce250916c7" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q4\2025_S23_Nov05-Nov18" style="display:none">
                         <td>25</td>
                         <td>2025_S23_Nov05-Nov18</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('ec873e95-ebe0-4fb2-9504-82ee31b250a7', '2025_S23_Nov05-Nov18')">2025\Q4\2025_S23_Nov05-Nov18</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('ec873e95-ebe0-4fb2-9504-82ee31b250a7', '2025_S23_Nov05-Nov18', selectedAreaPath)">2025\Q4\2025_S23_Nov05-Nov18</a></td>
                         <td>04/11/2025</td>
                         <td>17/11/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/ec873e95-ebe0-4fb2-9504-82ee31b250a7" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q4\2025_S24_Nov19-Dec02" style="display:none">
                         <td>26</td>
                         <td>2025_S24_Nov19-Dec02</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('7bac34ac-3b9b-4738-b292-f49b98a1110f', '2025_S24_Nov19-Dec02')">2025\Q4\2025_S24_Nov19-Dec02</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('7bac34ac-3b9b-4738-b292-f49b98a1110f', '2025_S24_Nov19-Dec02', selectedAreaPath)">2025\Q4\2025_S24_Nov19-Dec02</a></td>
                         <td>18/11/2025</td>
                         <td>01/12/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/7bac34ac-3b9b-4738-b292-f49b98a1110f" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q4\2025_S25_Dec03-Dec16" style="display:none">
                         <td>27</td>
                         <td>2025_S25_Dec03-Dec16</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('18996273-a28b-4386-8d75-14c4a41ab288', '2025_S25_Dec03-Dec16')">2025\Q4\2025_S25_Dec03-Dec16</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('18996273-a28b-4386-8d75-14c4a41ab288', '2025_S25_Dec03-Dec16', selectedAreaPath)">2025\Q4\2025_S25_Dec03-Dec16</a></td>
                         <td>02/12/2025</td>
                         <td>15/12/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/18996273-a28b-4386-8d75-14c4a41ab288" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2025\Q4\2025_S26_Dec17-Dec30" style="display:none">
                         <td>28</td>
                         <td>2025_S26_Dec17-Dec30</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('01909c52-90d7-4991-93dc-2d5b609a7caf', '2025_S26_Dec17-Dec30')">2025\Q4\2025_S26_Dec17-Dec30</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('01909c52-90d7-4991-93dc-2d5b609a7caf', '2025_S26_Dec17-Dec30', selectedAreaPath)">2025\Q4\2025_S26_Dec17-Dec30</a></td>
                         <td>16/12/2025</td>
                         <td>29/12/2025</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/01909c52-90d7-4991-93dc-2d5b609a7caf" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2026\Q1\2026_S01_Dec31-Jan13" style="display:none">
                         <td>29</td>
                         <td>2026_S01_Dec31-Jan13</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('7b9fdecc-8820-42ec-b290-136b9dc35d8f', '2026_S01_Dec31-Jan13')">2026\Q1\2026_S01_Dec31-Jan13</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('7b9fdecc-8820-42ec-b290-136b9dc35d8f', '2026_S01_Dec31-Jan13', selectedAreaPath)">2026\Q1\2026_S01_Dec31-Jan13</a></td>
                         <td>30/12/2025</td>
                         <td>12/01/2026</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/7b9fdecc-8820-42ec-b290-136b9dc35d8f" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2026\Q1\2026_S02_Jan14-Jan27" style="display:none">
                         <td>30</td>
                         <td>2026_S02_Jan14-Jan27</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('dfea2a60-abd9-4952-b8cd-6b86a85a550d', '2026_S02_Jan14-Jan27')">2026\Q1\2026_S02_Jan14-Jan27</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('dfea2a60-abd9-4952-b8cd-6b86a85a550d', '2026_S02_Jan14-Jan27', selectedAreaPath)">2026\Q1\2026_S02_Jan14-Jan27</a></td>
                         <td>13/01/2026</td>
                         <td>26/01/2026</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/dfea2a60-abd9-4952-b8cd-6b86a85a550d" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2026\Q1\2026_S03_Jan28-Feb10" style="display:none">
                         <td>31</td>
                         <td>2026_S03_Jan28-Feb10</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('daf421a9-add0-4f45-b375-301e308d42fe', '2026_S03_Jan28-Feb10')">2026\Q1\2026_S03_Jan28-Feb10</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('daf421a9-add0-4f45-b375-301e308d42fe', '2026_S03_Jan28-Feb10', selectedAreaPath)">2026\Q1\2026_S03_Jan28-Feb10</a></td>
                         <td>27/01/2026</td>
                         <td>09/02/2026</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/daf421a9-add0-4f45-b375-301e308d42fe" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2026\Q1\2026_S04_Feb11-Feb24" style="display:none">
                         <td>32</td>
                         <td>2026_S04_Feb11-Feb24</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('870a5f8e-945e-47be-b293-dbd24533c9c3', '2026_S04_Feb11-Feb24')">2026\Q1\2026_S04_Feb11-Feb24</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('870a5f8e-945e-47be-b293-dbd24533c9c3', '2026_S04_Feb11-Feb24', selectedAreaPath)">2026\Q1\2026_S04_Feb11-Feb24</a></td>
                         <td>10/02/2026</td>
                         <td>23/02/2026</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/870a5f8e-945e-47be-b293-dbd24533c9c3" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2026\Q1\2026_S05_Feb25-Mar10" style="display:none">
                         <td>33</td>
                         <td>2026_S05_Feb25-Mar10</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('8cb4e421-3e01-4154-a6c9-1f1c28b57483', '2026_S05_Feb25-Mar10')">2026\Q1\2026_S05_Feb25-Mar10</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('8cb4e421-3e01-4154-a6c9-1f1c28b57483', '2026_S05_Feb25-Mar10', selectedAreaPath)">2026\Q1\2026_S05_Feb25-Mar10</a></td>
                         <td>24/02/2026</td>
                         <td>09/03/2026</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/8cb4e421-3e01-4154-a6c9-1f1c28b57483" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2026\Q1\2026_S06_Mar11-Mar24" style="display:none">
                         <td>34</td>
                         <td>2026_S06_Mar11-Mar24</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('8cf4d2df-cec2-4c9f-b93d-33cae355af85', '2026_S06_Mar11-Mar24')">2026\Q1\2026_S06_Mar11-Mar24</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('8cf4d2df-cec2-4c9f-b93d-33cae355af85', '2026_S06_Mar11-Mar24', selectedAreaPath)">2026\Q1\2026_S06_Mar11-Mar24</a></td>
                         <td>10/03/2026</td>
                         <td>23/03/2026</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/8cf4d2df-cec2-4c9f-b93d-33cae355af85" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="past" style="display:none">
+                    <tr data-status="past" data-path="2026\Q1\2026_S07_Mar25-Apr07" style="display:none">
                         <td>35</td>
                         <td>2026_S07_Mar25-Apr07</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('834031ff-d1da-411e-93ab-8ed819d54d8d', '2026_S07_Mar25-Apr07')">2026\Q1\2026_S07_Mar25-Apr07</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('834031ff-d1da-411e-93ab-8ed819d54d8d', '2026_S07_Mar25-Apr07', selectedAreaPath)">2026\Q1\2026_S07_Mar25-Apr07</a></td>
                         <td>24/03/2026</td>
                         <td>06/04/2026</td>
                         <td><span class="status-past">Concluída</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/834031ff-d1da-411e-93ab-8ed819d54d8d" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="current">
+                    <tr data-status="current" data-path="2026\Q2\2026_S08_Apr08-Apr21">
                         <td>36</td>
                         <td>2026_S08_Apr08-Apr21</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('bd20c351-45e3-4eed-99b6-88e7e76723ba', '2026_S08_Apr08-Apr21')">2026\Q2\2026_S08_Apr08-Apr21</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('bd20c351-45e3-4eed-99b6-88e7e76723ba', '2026_S08_Apr08-Apr21', selectedAreaPath)">2026\Q2\2026_S08_Apr08-Apr21</a></td>
                         <td>07/04/2026</td>
                         <td>20/04/2026</td>
                         <td><span class="status-current">Atual</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/bd20c351-45e3-4eed-99b6-88e7e76723ba" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q2\2026_S09_Apr22-May05" style="display:none">
                         <td>37</td>
                         <td>2026_S09_Apr22-May05</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('d13f212e-b77b-4026-b882-d32c40bdc219', '2026_S09_Apr22-May05')">2026\Q2\2026_S09_Apr22-May05</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('d13f212e-b77b-4026-b882-d32c40bdc219', '2026_S09_Apr22-May05', selectedAreaPath)">2026\Q2\2026_S09_Apr22-May05</a></td>
                         <td>21/04/2026</td>
                         <td>04/05/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/d13f212e-b77b-4026-b882-d32c40bdc219" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q2\2026_S10_May06-May19" style="display:none">
                         <td>38</td>
                         <td>2026_S10_May06-May19</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('8043434b-42ea-4fda-8c00-a43135f5e44e', '2026_S10_May06-May19')">2026\Q2\2026_S10_May06-May19</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('8043434b-42ea-4fda-8c00-a43135f5e44e', '2026_S10_May06-May19', selectedAreaPath)">2026\Q2\2026_S10_May06-May19</a></td>
                         <td>05/05/2026</td>
                         <td>18/05/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/8043434b-42ea-4fda-8c00-a43135f5e44e" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q2\2026_S11_May20-Jun02" style="display:none">
                         <td>39</td>
                         <td>2026_S11_May20-Jun02</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('30acee75-27d0-4916-aac4-0785eafb0c24', '2026_S11_May20-Jun02')">2026\Q2\2026_S11_May20-Jun02</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('30acee75-27d0-4916-aac4-0785eafb0c24', '2026_S11_May20-Jun02', selectedAreaPath)">2026\Q2\2026_S11_May20-Jun02</a></td>
                         <td>19/05/2026</td>
                         <td>01/06/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/30acee75-27d0-4916-aac4-0785eafb0c24" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q2\2026_S12_Jun03-Jun16" style="display:none">
                         <td>40</td>
                         <td>2026_S12_Jun03-Jun16</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('56cae23a-8c1e-40ee-8a37-a3175b8ac19e', '2026_S12_Jun03-Jun16')">2026\Q2\2026_S12_Jun03-Jun16</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('56cae23a-8c1e-40ee-8a37-a3175b8ac19e', '2026_S12_Jun03-Jun16', selectedAreaPath)">2026\Q2\2026_S12_Jun03-Jun16</a></td>
                         <td>02/06/2026</td>
                         <td>15/06/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/56cae23a-8c1e-40ee-8a37-a3175b8ac19e" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q2\2026_S13_Jun17-Jun30" style="display:none">
                         <td>41</td>
                         <td>2026_S13_Jun17-Jun30</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('75f5a524-f248-44ae-88cb-6ab7ab2c93d3', '2026_S13_Jun17-Jun30')">2026\Q2\2026_S13_Jun17-Jun30</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('75f5a524-f248-44ae-88cb-6ab7ab2c93d3', '2026_S13_Jun17-Jun30', selectedAreaPath)">2026\Q2\2026_S13_Jun17-Jun30</a></td>
                         <td>16/06/2026</td>
                         <td>29/06/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/75f5a524-f248-44ae-88cb-6ab7ab2c93d3" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q3\2026_S14_Jul01-Jul14" style="display:none">
                         <td>42</td>
                         <td>2026_S14_Jul01-Jul14</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('ada24dfa-2559-4d7e-89e5-b5d8da5ead2b', '2026_S14_Jul01-Jul14')">2026\Q3\2026_S14_Jul01-Jul14</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('ada24dfa-2559-4d7e-89e5-b5d8da5ead2b', '2026_S14_Jul01-Jul14', selectedAreaPath)">2026\Q3\2026_S14_Jul01-Jul14</a></td>
                         <td>30/06/2026</td>
                         <td>13/07/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/ada24dfa-2559-4d7e-89e5-b5d8da5ead2b" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q3\2026_S15_Jul15-Jul28" style="display:none">
                         <td>43</td>
                         <td>2026_S15_Jul15-Jul28</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('a23a802f-ecf6-407a-b3fb-be1bb6a89836', '2026_S15_Jul15-Jul28')">2026\Q3\2026_S15_Jul15-Jul28</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('a23a802f-ecf6-407a-b3fb-be1bb6a89836', '2026_S15_Jul15-Jul28', selectedAreaPath)">2026\Q3\2026_S15_Jul15-Jul28</a></td>
                         <td>14/07/2026</td>
                         <td>27/07/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/a23a802f-ecf6-407a-b3fb-be1bb6a89836" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q3\2026_S16_Jul29-Aug11" style="display:none">
                         <td>44</td>
                         <td>2026_S16_Jul29-Aug11</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('68611c9c-9593-4fb4-8dd3-945814901028', '2026_S16_Jul29-Aug11')">2026\Q3\2026_S16_Jul29-Aug11</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('68611c9c-9593-4fb4-8dd3-945814901028', '2026_S16_Jul29-Aug11', selectedAreaPath)">2026\Q3\2026_S16_Jul29-Aug11</a></td>
                         <td>28/07/2026</td>
                         <td>10/08/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/68611c9c-9593-4fb4-8dd3-945814901028" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q3\2026_S17_Aug12-Aug25" style="display:none">
                         <td>45</td>
                         <td>2026_S17_Aug12-Aug25</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('ac8e54fe-4495-41ce-8c0a-4084ba7095ea', '2026_S17_Aug12-Aug25')">2026\Q3\2026_S17_Aug12-Aug25</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('ac8e54fe-4495-41ce-8c0a-4084ba7095ea', '2026_S17_Aug12-Aug25', selectedAreaPath)">2026\Q3\2026_S17_Aug12-Aug25</a></td>
                         <td>11/08/2026</td>
                         <td>24/08/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/ac8e54fe-4495-41ce-8c0a-4084ba7095ea" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q3\2026_S18_Aug26-Sep08" style="display:none">
                         <td>46</td>
                         <td>2026_S18_Aug26-Sep08</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('06bd880c-f1d0-4386-9aeb-9b7572f60507', '2026_S18_Aug26-Sep08')">2026\Q3\2026_S18_Aug26-Sep08</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('06bd880c-f1d0-4386-9aeb-9b7572f60507', '2026_S18_Aug26-Sep08', selectedAreaPath)">2026\Q3\2026_S18_Aug26-Sep08</a></td>
                         <td>25/08/2026</td>
                         <td>07/09/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/06bd880c-f1d0-4386-9aeb-9b7572f60507" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q3\2026_S19_Sep09-Sep22" style="display:none">
                         <td>47</td>
                         <td>2026_S19_Sep09-Sep22</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('075840a9-86dd-4840-9eff-033c1417afc6', '2026_S19_Sep09-Sep22')">2026\Q3\2026_S19_Sep09-Sep22</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('075840a9-86dd-4840-9eff-033c1417afc6', '2026_S19_Sep09-Sep22', selectedAreaPath)">2026\Q3\2026_S19_Sep09-Sep22</a></td>
                         <td>08/09/2026</td>
                         <td>21/09/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/075840a9-86dd-4840-9eff-033c1417afc6" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q3\2026_S20_Sep23-Oct06" style="display:none">
                         <td>48</td>
                         <td>2026_S20_Sep23-Oct06</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('a837455b-40c9-4ba0-aae7-47b513fcc132', '2026_S20_Sep23-Oct06')">2026\Q3\2026_S20_Sep23-Oct06</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('a837455b-40c9-4ba0-aae7-47b513fcc132', '2026_S20_Sep23-Oct06', selectedAreaPath)">2026\Q3\2026_S20_Sep23-Oct06</a></td>
                         <td>22/09/2026</td>
                         <td>05/10/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/a837455b-40c9-4ba0-aae7-47b513fcc132" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q4\2026_S21_Oct07-Oct20" style="display:none">
                         <td>49</td>
                         <td>2026_S21_Oct07-Oct20</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('182c60b0-db7e-4707-82eb-0d60f1a3b157', '2026_S21_Oct07-Oct20')">2026\Q4\2026_S21_Oct07-Oct20</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('182c60b0-db7e-4707-82eb-0d60f1a3b157', '2026_S21_Oct07-Oct20', selectedAreaPath)">2026\Q4\2026_S21_Oct07-Oct20</a></td>
                         <td>06/10/2026</td>
                         <td>19/10/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/182c60b0-db7e-4707-82eb-0d60f1a3b157" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q4\2026_S22_Oct21-Nov03" style="display:none">
                         <td>50</td>
                         <td>2026_S22_Oct21-Nov03</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('c3dcfab3-fa7f-4092-9908-b21a044b0700', '2026_S22_Oct21-Nov03')">2026\Q4\2026_S22_Oct21-Nov03</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('c3dcfab3-fa7f-4092-9908-b21a044b0700', '2026_S22_Oct21-Nov03', selectedAreaPath)">2026\Q4\2026_S22_Oct21-Nov03</a></td>
                         <td>20/10/2026</td>
                         <td>02/11/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/c3dcfab3-fa7f-4092-9908-b21a044b0700" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q4\2026_S23_Nov04-Nov17" style="display:none">
                         <td>51</td>
                         <td>2026_S23_Nov04-Nov17</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('4125dcc0-24ef-42e9-addc-98658d0bf41f', '2026_S23_Nov04-Nov17')">2026\Q4\2026_S23_Nov04-Nov17</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('4125dcc0-24ef-42e9-addc-98658d0bf41f', '2026_S23_Nov04-Nov17', selectedAreaPath)">2026\Q4\2026_S23_Nov04-Nov17</a></td>
                         <td>03/11/2026</td>
                         <td>16/11/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/4125dcc0-24ef-42e9-addc-98658d0bf41f" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q4\2026_S24_Nov18-Dec01" style="display:none">
                         <td>52</td>
                         <td>2026_S24_Nov18-Dec01</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('60f40df0-c950-4fbb-add3-b86532a583b5', '2026_S24_Nov18-Dec01')">2026\Q4\2026_S24_Nov18-Dec01</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('60f40df0-c950-4fbb-add3-b86532a583b5', '2026_S24_Nov18-Dec01', selectedAreaPath)">2026\Q4\2026_S24_Nov18-Dec01</a></td>
                         <td>17/11/2026</td>
                         <td>30/11/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/60f40df0-c950-4fbb-add3-b86532a583b5" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q4\2026_S25_Dec02-Dec15" style="display:none">
                         <td>53</td>
                         <td>2026_S25_Dec02-Dec15</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('40377206-6b4e-4010-a8a8-b3f76bd08429', '2026_S25_Dec02-Dec15')">2026\Q4\2026_S25_Dec02-Dec15</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('40377206-6b4e-4010-a8a8-b3f76bd08429', '2026_S25_Dec02-Dec15', selectedAreaPath)">2026\Q4\2026_S25_Dec02-Dec15</a></td>
                         <td>01/12/2026</td>
                         <td>14/12/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/40377206-6b4e-4010-a8a8-b3f76bd08429" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2026\Q4\2026_S26_Dec16-Dec29" style="display:none">
                         <td>54</td>
                         <td>2026_S26_Dec16-Dec29</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('b2323098-5e8c-4b28-bbc9-46c08b4954dd', '2026_S26_Dec16-Dec29')">2026\Q4\2026_S26_Dec16-Dec29</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('b2323098-5e8c-4b28-bbc9-46c08b4954dd', '2026_S26_Dec16-Dec29', selectedAreaPath)">2026\Q4\2026_S26_Dec16-Dec29</a></td>
                         <td>15/12/2026</td>
                         <td>28/12/2026</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/b2323098-5e8c-4b28-bbc9-46c08b4954dd" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q1\2027_S01_Dec30-Jan12" style="display:none">
                         <td>55</td>
                         <td>2027_S01_Dec30-Jan12</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('f1b5ecf4-764c-4a27-89ff-5905f91df04d', '2027_S01_Dec30-Jan12')">2027\Q1\2027_S01_Dec30-Jan12</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('f1b5ecf4-764c-4a27-89ff-5905f91df04d', '2027_S01_Dec30-Jan12', selectedAreaPath)">2027\Q1\2027_S01_Dec30-Jan12</a></td>
                         <td>29/12/2026</td>
                         <td>11/01/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/f1b5ecf4-764c-4a27-89ff-5905f91df04d" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q1\2027_S02_Jan13-Jan26" style="display:none">
                         <td>56</td>
                         <td>2027_S02_Jan13-Jan26</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('def98a12-61a5-4b0b-a166-0057d96c9c0f', '2027_S02_Jan13-Jan26')">2027\Q1\2027_S02_Jan13-Jan26</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('def98a12-61a5-4b0b-a166-0057d96c9c0f', '2027_S02_Jan13-Jan26', selectedAreaPath)">2027\Q1\2027_S02_Jan13-Jan26</a></td>
                         <td>12/01/2027</td>
                         <td>25/01/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/def98a12-61a5-4b0b-a166-0057d96c9c0f" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q1\2027_S03_Jan27-Feb09" style="display:none">
                         <td>57</td>
                         <td>2027_S03_Jan27-Feb09</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('57f59003-f1fb-492f-95bf-43aca7f8d0df', '2027_S03_Jan27-Feb09')">2027\Q1\2027_S03_Jan27-Feb09</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('57f59003-f1fb-492f-95bf-43aca7f8d0df', '2027_S03_Jan27-Feb09', selectedAreaPath)">2027\Q1\2027_S03_Jan27-Feb09</a></td>
                         <td>26/01/2027</td>
                         <td>08/02/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/57f59003-f1fb-492f-95bf-43aca7f8d0df" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q1\2027_S04_Feb10-Feb23" style="display:none">
                         <td>58</td>
                         <td>2027_S04_Feb10-Feb23</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('82fd480d-2224-436b-a0b3-2853ff8d8709', '2027_S04_Feb10-Feb23')">2027\Q1\2027_S04_Feb10-Feb23</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('82fd480d-2224-436b-a0b3-2853ff8d8709', '2027_S04_Feb10-Feb23', selectedAreaPath)">2027\Q1\2027_S04_Feb10-Feb23</a></td>
                         <td>09/02/2027</td>
                         <td>22/02/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/82fd480d-2224-436b-a0b3-2853ff8d8709" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q1\2027_S05_Feb24-Mar09" style="display:none">
                         <td>59</td>
                         <td>2027_S05_Feb24-Mar09</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('07df1b66-2cab-46ac-89d3-fdf8506660bd', '2027_S05_Feb24-Mar09')">2027\Q1\2027_S05_Feb24-Mar09</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('07df1b66-2cab-46ac-89d3-fdf8506660bd', '2027_S05_Feb24-Mar09', selectedAreaPath)">2027\Q1\2027_S05_Feb24-Mar09</a></td>
                         <td>23/02/2027</td>
                         <td>08/03/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/07df1b66-2cab-46ac-89d3-fdf8506660bd" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q1\2027_S06_Mar10-Mar23" style="display:none">
                         <td>60</td>
                         <td>2027_S06_Mar10-Mar23</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('bce5b291-5f4a-47d1-b548-e9cb7c1b8143', '2027_S06_Mar10-Mar23')">2027\Q1\2027_S06_Mar10-Mar23</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('bce5b291-5f4a-47d1-b548-e9cb7c1b8143', '2027_S06_Mar10-Mar23', selectedAreaPath)">2027\Q1\2027_S06_Mar10-Mar23</a></td>
                         <td>09/03/2027</td>
                         <td>22/03/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/bce5b291-5f4a-47d1-b548-e9cb7c1b8143" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q1\2027_S07_Mar24-Apr06" style="display:none">
                         <td>61</td>
                         <td>2027_S07_Mar24-Apr06</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('c81eded8-ab85-4078-872d-87916fd649a5', '2027_S07_Mar24-Apr06')">2027\Q1\2027_S07_Mar24-Apr06</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('c81eded8-ab85-4078-872d-87916fd649a5', '2027_S07_Mar24-Apr06', selectedAreaPath)">2027\Q1\2027_S07_Mar24-Apr06</a></td>
                         <td>23/03/2027</td>
                         <td>05/04/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/c81eded8-ab85-4078-872d-87916fd649a5" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q2\2027_S08_Apr07-Apr20" style="display:none">
                         <td>62</td>
                         <td>2027_S08_Apr07-Apr20</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('e59974fc-3088-4c7a-ae2d-375df5b70f96', '2027_S08_Apr07-Apr20')">2027\Q2\2027_S08_Apr07-Apr20</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('e59974fc-3088-4c7a-ae2d-375df5b70f96', '2027_S08_Apr07-Apr20', selectedAreaPath)">2027\Q2\2027_S08_Apr07-Apr20</a></td>
                         <td>06/04/2027</td>
                         <td>19/04/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/e59974fc-3088-4c7a-ae2d-375df5b70f96" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q2\2027_S09_Apr21-May04" style="display:none">
                         <td>63</td>
                         <td>2027_S09_Apr21-May04</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('6f9d1794-3c8a-4e64-876f-1a25619cf820', '2027_S09_Apr21-May04')">2027\Q2\2027_S09_Apr21-May04</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('6f9d1794-3c8a-4e64-876f-1a25619cf820', '2027_S09_Apr21-May04', selectedAreaPath)">2027\Q2\2027_S09_Apr21-May04</a></td>
                         <td>20/04/2027</td>
                         <td>03/05/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/6f9d1794-3c8a-4e64-876f-1a25619cf820" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q2\2027_S10_May05-May18" style="display:none">
                         <td>64</td>
                         <td>2027_S10_May05-May18</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('4837e7c1-3b74-4e3e-8328-2ab78a96c404', '2027_S10_May05-May18')">2027\Q2\2027_S10_May05-May18</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('4837e7c1-3b74-4e3e-8328-2ab78a96c404', '2027_S10_May05-May18', selectedAreaPath)">2027\Q2\2027_S10_May05-May18</a></td>
                         <td>04/05/2027</td>
                         <td>17/05/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/4837e7c1-3b74-4e3e-8328-2ab78a96c404" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q2\2027_S11_May19-Jun01" style="display:none">
                         <td>65</td>
                         <td>2027_S11_May19-Jun01</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('49a6b6f6-30f5-4210-9dcf-9100abf6f75c', '2027_S11_May19-Jun01')">2027\Q2\2027_S11_May19-Jun01</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('49a6b6f6-30f5-4210-9dcf-9100abf6f75c', '2027_S11_May19-Jun01', selectedAreaPath)">2027\Q2\2027_S11_May19-Jun01</a></td>
                         <td>18/05/2027</td>
                         <td>31/05/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/49a6b6f6-30f5-4210-9dcf-9100abf6f75c" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q2\2027_S12_Jun02-Jun15" style="display:none">
                         <td>66</td>
                         <td>2027_S12_Jun02-Jun15</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('b40152b8-0b10-4969-bdd1-125616142f31', '2027_S12_Jun02-Jun15')">2027\Q2\2027_S12_Jun02-Jun15</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('b40152b8-0b10-4969-bdd1-125616142f31', '2027_S12_Jun02-Jun15', selectedAreaPath)">2027\Q2\2027_S12_Jun02-Jun15</a></td>
                         <td>01/06/2027</td>
                         <td>14/06/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/b40152b8-0b10-4969-bdd1-125616142f31" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q2\2027_S13_Jun16-Jun29" style="display:none">
                         <td>67</td>
                         <td>2027_S13_Jun16-Jun29</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('631429d5-e888-4e3c-a938-d071992ead48', '2027_S13_Jun16-Jun29')">2027\Q2\2027_S13_Jun16-Jun29</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('631429d5-e888-4e3c-a938-d071992ead48', '2027_S13_Jun16-Jun29', selectedAreaPath)">2027\Q2\2027_S13_Jun16-Jun29</a></td>
                         <td>15/06/2027</td>
                         <td>28/06/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/631429d5-e888-4e3c-a938-d071992ead48" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q3\2027_S14_Jun30-Jul13" style="display:none">
                         <td>68</td>
                         <td>2027_S14_Jun30-Jul13</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('73afd028-630e-4159-b547-2e747cc06f65', '2027_S14_Jun30-Jul13')">2027\Q3\2027_S14_Jun30-Jul13</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('73afd028-630e-4159-b547-2e747cc06f65', '2027_S14_Jun30-Jul13', selectedAreaPath)">2027\Q3\2027_S14_Jun30-Jul13</a></td>
                         <td>29/06/2027</td>
                         <td>12/07/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/73afd028-630e-4159-b547-2e747cc06f65" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q3\2027_S15_Jul14-Jul27" style="display:none">
                         <td>69</td>
                         <td>2027_S15_Jul14-Jul27</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('3811e759-5d93-41da-91f4-56cfeef7770d', '2027_S15_Jul14-Jul27')">2027\Q3\2027_S15_Jul14-Jul27</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('3811e759-5d93-41da-91f4-56cfeef7770d', '2027_S15_Jul14-Jul27', selectedAreaPath)">2027\Q3\2027_S15_Jul14-Jul27</a></td>
                         <td>13/07/2027</td>
                         <td>26/07/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/3811e759-5d93-41da-91f4-56cfeef7770d" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q3\2027_S16_Jul28-Aug10" style="display:none">
                         <td>70</td>
                         <td>2027_S16_Jul28-Aug10</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('017289f6-307b-452d-b9f5-bfb93471c254', '2027_S16_Jul28-Aug10')">2027\Q3\2027_S16_Jul28-Aug10</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('017289f6-307b-452d-b9f5-bfb93471c254', '2027_S16_Jul28-Aug10', selectedAreaPath)">2027\Q3\2027_S16_Jul28-Aug10</a></td>
                         <td>27/07/2027</td>
                         <td>09/08/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/017289f6-307b-452d-b9f5-bfb93471c254" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q3\2027_S17_Aug11-Aug24" style="display:none">
                         <td>71</td>
                         <td>2027_S17_Aug11-Aug24</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('91f2c739-b59c-4aea-ab5d-2be93903011c', '2027_S17_Aug11-Aug24')">2027\Q3\2027_S17_Aug11-Aug24</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('91f2c739-b59c-4aea-ab5d-2be93903011c', '2027_S17_Aug11-Aug24', selectedAreaPath)">2027\Q3\2027_S17_Aug11-Aug24</a></td>
                         <td>10/08/2027</td>
                         <td>23/08/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/91f2c739-b59c-4aea-ab5d-2be93903011c" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q3\2027_S18_Aug25-Sep07" style="display:none">
                         <td>72</td>
                         <td>2027_S18_Aug25-Sep07</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('cb4af1b3-fc13-4a5c-927a-778d592481b1', '2027_S18_Aug25-Sep07')">2027\Q3\2027_S18_Aug25-Sep07</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('cb4af1b3-fc13-4a5c-927a-778d592481b1', '2027_S18_Aug25-Sep07', selectedAreaPath)">2027\Q3\2027_S18_Aug25-Sep07</a></td>
                         <td>24/08/2027</td>
                         <td>06/09/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/cb4af1b3-fc13-4a5c-927a-778d592481b1" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q3\2027_S19_Sep08-Sep21" style="display:none">
                         <td>73</td>
                         <td>2027_S19_Sep08-Sep21</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('d3f5047c-52b8-475c-b6d8-971d432d19f3', '2027_S19_Sep08-Sep21')">2027\Q3\2027_S19_Sep08-Sep21</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('d3f5047c-52b8-475c-b6d8-971d432d19f3', '2027_S19_Sep08-Sep21', selectedAreaPath)">2027\Q3\2027_S19_Sep08-Sep21</a></td>
                         <td>07/09/2027</td>
                         <td>20/09/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/d3f5047c-52b8-475c-b6d8-971d432d19f3" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q3\2027_S20_Sep22-Oct05" style="display:none">
                         <td>74</td>
                         <td>2027_S20_Sep22-Oct05</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('346379c5-5c33-48de-affb-bf522207b6ee', '2027_S20_Sep22-Oct05')">2027\Q3\2027_S20_Sep22-Oct05</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('346379c5-5c33-48de-affb-bf522207b6ee', '2027_S20_Sep22-Oct05', selectedAreaPath)">2027\Q3\2027_S20_Sep22-Oct05</a></td>
                         <td>21/09/2027</td>
                         <td>04/10/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/346379c5-5c33-48de-affb-bf522207b6ee" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q4\2027_S21_Oct06-Oct19" style="display:none">
                         <td>75</td>
                         <td>2027_S21_Oct06-Oct19</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('ba62ea6a-a734-4242-ab8d-775ff47ba246', '2027_S21_Oct06-Oct19')">2027\Q4\2027_S21_Oct06-Oct19</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('ba62ea6a-a734-4242-ab8d-775ff47ba246', '2027_S21_Oct06-Oct19', selectedAreaPath)">2027\Q4\2027_S21_Oct06-Oct19</a></td>
                         <td>05/10/2027</td>
                         <td>18/10/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/ba62ea6a-a734-4242-ab8d-775ff47ba246" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q4\2027_S22_Oct20-Nov02" style="display:none">
                         <td>76</td>
                         <td>2027_S22_Oct20-Nov02</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('eba45d4d-86f3-4a27-b604-d59aee718ed3', '2027_S22_Oct20-Nov02')">2027\Q4\2027_S22_Oct20-Nov02</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('eba45d4d-86f3-4a27-b604-d59aee718ed3', '2027_S22_Oct20-Nov02', selectedAreaPath)">2027\Q4\2027_S22_Oct20-Nov02</a></td>
                         <td>19/10/2027</td>
                         <td>01/11/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/eba45d4d-86f3-4a27-b604-d59aee718ed3" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q4\2027_S23_Nov03-Nov16" style="display:none">
                         <td>77</td>
                         <td>2027_S23_Nov03-Nov16</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('546f39a2-dd15-48be-bcac-98495fa13bcd', '2027_S23_Nov03-Nov16')">2027\Q4\2027_S23_Nov03-Nov16</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('546f39a2-dd15-48be-bcac-98495fa13bcd', '2027_S23_Nov03-Nov16', selectedAreaPath)">2027\Q4\2027_S23_Nov03-Nov16</a></td>
                         <td>02/11/2027</td>
                         <td>15/11/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/546f39a2-dd15-48be-bcac-98495fa13bcd" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q4\2027_S24_Nov17-Nov30" style="display:none">
                         <td>78</td>
                         <td>2027_S24_Nov17-Nov30</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('868b7bb4-4584-4091-88e3-2e59f85ec3a4', '2027_S24_Nov17-Nov30')">2027\Q4\2027_S24_Nov17-Nov30</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('868b7bb4-4584-4091-88e3-2e59f85ec3a4', '2027_S24_Nov17-Nov30', selectedAreaPath)">2027\Q4\2027_S24_Nov17-Nov30</a></td>
                         <td>16/11/2027</td>
                         <td>29/11/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/868b7bb4-4584-4091-88e3-2e59f85ec3a4" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q4\2027_S25_Dec01-Dec14" style="display:none">
                         <td>79</td>
                         <td>2027_S25_Dec01-Dec14</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('7dd5d0a6-e47c-4be5-8f09-1ca1ada1aec7', '2027_S25_Dec01-Dec14')">2027\Q4\2027_S25_Dec01-Dec14</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('7dd5d0a6-e47c-4be5-8f09-1ca1ada1aec7', '2027_S25_Dec01-Dec14', selectedAreaPath)">2027\Q4\2027_S25_Dec01-Dec14</a></td>
                         <td>30/11/2027</td>
                         <td>13/12/2027</td>
                         <td><span class="status-future">Futura</span></td>
                         <td><a href="https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/d905cd24-80f3-49aa-a47e-e8a3768ab355/_apis/work/teamsettings/iterations/7dd5d0a6-e47c-4be5-8f09-1ca1ada1aec7" target="_blank" class="iteration-link">Ver no Azure</a></td>
                     </tr>
-                    <tr data-status="future" style="display:none">
+                    <tr data-status="future" data-path="2027\Q4\2027_S26_Dec15-Dec28" style="display:none">
                         <td>80</td>
                         <td>2027_S26_Dec15-Dec28</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('df6e4a17-4fbc-47d8-bd49-37691da94bb5', '2027_S26_Dec15-Dec28')">2027\Q4\2027_S26_Dec15-Dec28</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('df6e4a17-4fbc-47d8-bd49-37691da94bb5', '2027_S26_Dec15-Dec28', selectedAreaPath)">2027\Q4\2027_S26_Dec15-Dec28</a></td>
                         <td>14/12/2027</td>
                         <td>27/12/2027</td>
                         <td><span class="status-future">Futura</span></td>
@@ -1079,7 +1099,7 @@
             </table>
         </div>
 
-        <div class="footer">Gerado em 16/04/2026, 14:33:37 | Azure DevOps API</div>
+        <div class="footer">Gerado em 17/04/2026, 21:29:02 | Azure DevOps API</div>
     </div>
 
     <!-- Modal para Work Items -->
@@ -1117,6 +1137,142 @@
     </div>
 
     <script>
+        // === FILTRO AREA + ITERATION ===
+        let selectedAreaPath = '';
+        let selectedIterationPath = '';
+        let areaTreeData = null;
+        let iterationTreeData = null;
+
+        const ADO_FILTER_HEADERS = {
+            'Authorization': 'Basic QmFzaWM6QXhaUDFPbzJVY0dZd1VGMVZYTVNtN01CRkI4Z1lVVXc3WGJPN1ZQYWI1S01mbkc0UmdjS0pRUUo5OUNEQUNBQUFBQURYZWVVQUFBU0FaRE80R2Fy',
+            'Content-Type': 'application/json'
+        };
+
+        async function initFilters() {
+            try {
+                const [areasResp, iterResp] = await Promise.all([
+                    fetch('https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/_apis/wit/classificationnodes/areas?$depth=10&api-version=7.0', { headers: ADO_FILTER_HEADERS }),
+                    fetch('https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/_apis/wit/classificationnodes/iterations?$depth=10&api-version=7.0', { headers: ADO_FILTER_HEADERS })
+                ]);
+                if (!areasResp.ok || !iterResp.ok) throw new Error('Erro areas:' + areasResp.status + ' iter:' + iterResp.status);
+                areaTreeData = await areasResp.json();
+                iterationTreeData = await iterResp.json();
+                const areaRoot = findNodeByName(areaTreeData, 'Mastersaf Interfaces');
+                const iterRoot = findNodeByName(iterationTreeData, 'Mastersaf Interfaces');
+                if (areaRoot) buildCascade('areaCascade', areaRoot, 'area');
+                if (iterRoot) buildCascade('iterationCascade', iterRoot, 'iteration');
+            } catch (e) {
+                document.getElementById('filterBar').insertAdjacentHTML('beforeend', '<p style="color:red;font-size:12px;margin:6px 0 0">⚠️ Erro ao carregar filtros: ' + e.message + '</p>');
+            }
+        }
+
+        function findNodeByName(node, name) {
+            if (node.name === name) return node;
+            if (node.children) {
+                for (const child of node.children) {
+                    const found = findNodeByName(child, name);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        function buildCascade(containerId, parentNode, type) {
+            const container = document.getElementById(containerId);
+            if (!parentNode || !parentNode.children || parentNode.children.length === 0) return;
+            const select = document.createElement('select');
+            select.style.cssText = 'border:1px solid #aac4e8;border-radius:5px;padding:6px 10px;font-size:12px;background:white;min-width:130px;cursor:pointer;';
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = '';
+            defaultOpt.textContent = '-- selecione --';
+            select.appendChild(defaultOpt);
+            parentNode.children.forEach(function(child) {
+                const opt = document.createElement('option');
+                opt.value = child.name;
+                opt.textContent = child.name;
+                select.appendChild(opt);
+            });
+            select.addEventListener('change', function() {
+                let next = select.nextSibling;
+                while (next) { const rem = next; next = next.nextSibling; container.removeChild(rem); }
+                updateSelectedPath(containerId, type);
+                if (select.value) {
+                    const childNode = parentNode.children.find(function(c) { return c.name === select.value; });
+                    if (childNode && childNode.children && childNode.children.length > 0) {
+                        const arrow = document.createElement('span');
+                        arrow.textContent = '›';
+                        arrow.style.cssText = 'color:#999;font-size:14px;padding:0 2px;';
+                        container.appendChild(arrow);
+                        buildCascade(containerId, childNode, type);
+                    }
+                }
+            });
+            container.appendChild(select);
+        }
+
+        function updateSelectedPath(containerId, type) {
+            const selects = document.getElementById(containerId).querySelectorAll('select');
+            const path = Array.from(selects).map(function(s) { return s.value; }).filter(Boolean).join('\\');
+            if (type === 'area') selectedAreaPath = path;
+            else selectedIterationPath = path;
+        }
+
+        function applyFilter() {
+            document.getElementById('tableHiddenBanner').style.display = 'none';
+            document.querySelector('.table-container').style.display = '';
+            document.getElementById('statusFilters').style.display = '';
+            const activeBtn = document.querySelector('.filter-btn.active');
+            const status = activeBtn ? (activeBtn.getAttribute('onclick').match(/'([^']+)'/) || [])[1] || 'all' : 'all';
+            const rows = document.querySelectorAll('#iterationsTable tbody tr');
+            rows.forEach(function(row) {
+                const matchesStatus = status === 'all' || row.dataset.status === status;
+                const rowPath = row.dataset.path || '';
+                const matchesIteration = !selectedIterationPath || rowPath.startsWith(selectedIterationPath);
+                row.style.display = (matchesStatus && matchesIteration) ? '' : 'none';
+            });
+            updateFilterBadge();
+        }
+
+        function clearFilter() {
+            selectedAreaPath = '';
+            selectedIterationPath = '';
+            document.getElementById('areaCascade').innerHTML = '';
+            document.getElementById('iterationCascade').innerHTML = '';
+            const areaRoot = areaTreeData ? findNodeByName(areaTreeData, 'Mastersaf Interfaces') : null;
+            const iterRoot = iterationTreeData ? findNodeByName(iterationTreeData, 'Mastersaf Interfaces') : null;
+            if (areaRoot) buildCascade('areaCascade', areaRoot, 'area');
+            if (iterRoot) buildCascade('iterationCascade', iterRoot, 'iteration');
+            document.querySelector('.table-container').style.display = 'none';
+            document.getElementById('statusFilters').style.display = 'none';
+            document.getElementById('tableHiddenBanner').style.display = '';
+            updateFilterBadge();
+            document.querySelector('.filter-btn.active')?.classList.remove('active');
+            const currentBtn = document.querySelector('.filter-btn[onclick*="current"]'); if (currentBtn) currentBtn.classList.add('active');
+        }
+
+        function updateFilterBadge() {
+            let badge = document.getElementById('filterActiveBadge');
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.id = 'filterActiveBadge';
+                badge.className = 'stat-badge';
+                document.querySelector('.header-stats').appendChild(badge);
+            }
+            if (selectedAreaPath || selectedIterationPath) {
+                badge.textContent = (selectedAreaPath || 'Todas as áreas') + ' · ' + (selectedIterationPath || 'Todas as iterações');
+                badge.style.display = '';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.table-container').style.display = 'none';
+            document.getElementById('statusFilters').style.display = 'none';
+            initFilters();
+        });
+        // === FIM FILTRO ===
+
         function filterTable(status, button) {
             const rows = document.querySelectorAll('#iterationsTable tbody tr');
             const buttons = document.querySelectorAll('.filter-btn');
@@ -1125,12 +1281,15 @@
             button.classList.add('active');
 
             rows.forEach(row => {
-                row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+                const matchesStatus = status === 'all' || row.dataset.status === status;
+                const rowPath = row.dataset.path || '';
+                const matchesIteration = !selectedIterationPath || rowPath.startsWith(selectedIterationPath);
+                row.style.display = (matchesStatus && matchesIteration) ? '' : 'none';
             });
 
         }
 
-        async function showWorkItems(iterationId, iterationName) {
+        async function showWorkItems(iterationId, iterationName, areaPath) {
             const modal = document.getElementById('workItemsModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalContent = document.getElementById('modalContent');
@@ -1182,6 +1341,11 @@
                                 const fields = workItemData.fields;
 
                                 if (fields['System.WorkItemType'] === 'User Story') {
+                                    if (areaPath) {
+                                        const fullArea = 'Mastersaf Interfaces\\' + areaPath;
+                                        const itemArea = fields['System.AreaPath'];
+                                        if (itemArea !== undefined && itemArea !== fullArea && !itemArea.startsWith(fullArea + '\\')) continue;
+                                    }
                                     userStoryCount++;
                                     const assignee = (fields['System.AssignedTo'] && fields['System.AssignedTo'].displayName) || '-';
                                     if (assignee !== '-') usersSet.add(assignee);

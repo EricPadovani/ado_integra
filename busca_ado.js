@@ -427,14 +427,34 @@ function gerarHTML(iteracoes) {
             </div>
         </div>
 
-        <div class="filters">
+        <div id="filterBar" style="background:#f0f4ff;border-bottom:2px solid #c7d6f5;padding:12px 20px;">
+            <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;">
+                <div>
+                    <div style="font-size:10px;font-weight:700;color:#1e4d8c;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;">Area Path</div>
+                    <div id="areaCascade" style="display:flex;gap:6px;align-items:center;"></div>
+                </div>
+                <div>
+                    <div style="font-size:10px;font-weight:700;color:#1e4d8c;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;">Iteration Path</div>
+                    <div id="iterationCascade" style="display:flex;gap:6px;align-items:center;"></div>
+                </div>
+                <div style="display:flex;gap:6px;padding-bottom:1px;">
+                    <button onclick="applyFilter()" style="background:#1e4d8c;color:white;border:none;border-radius:5px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;">Filtrar</button>
+                    <button onclick="clearFilter()" style="background:none;border:1px solid #aaa;border-radius:5px;padding:8px 14px;font-size:12px;color:#666;cursor:pointer;">Limpar</button>
+                </div>
+            </div>
+        </div>
+        <div id="tableHiddenBanner" style="padding:48px;text-align:center;color:#aaa;font-size:13px;background:#fafafa;border-top:1px dashed #ddd;">
+            <span style="font-size:32px;display:block;margin-bottom:10px;">🔍</span>
+            Selecione <strong>Area Path</strong> e <strong>Iteration Path</strong> acima e clique em <strong>Filtrar</strong> para ver as iterações.
+        </div>
+        <div class="filters" id="statusFilters" style="display:none">
             <button class="filter-btn" onclick="filterTable('all', this)">Todas</button>
             <button class="filter-btn" onclick="filterTable('past', this)">Concluídas</button>
             <button class="filter-btn active" onclick="filterTable('current', this)">Atuais</button>
             <button class="filter-btn" onclick="filterTable('future', this)">Futuras</button>
         </div>
 
-        <div class="table-container">
+        <div class="table-container" style="display:none">
             <table id="iterationsTable">
                 <thead>
                     <tr>
@@ -457,10 +477,10 @@ function gerarHTML(iteracoes) {
         const rowDisplay = timeFrame !== 'current' ? ' style="display:none"' : '';
 
         html += `
-                    <tr data-status="${timeFrame}"${rowDisplay}>
+                    <tr data-status="${timeFrame}" data-path="${iteracao.path.replace('Mastersaf Interfaces\\', '')}"${rowDisplay}>
                         <td>${index + 1}</td>
                         <td>${iteracao.name}</td>
-                        <td><a href="#" class="path-link" onclick="showWorkItems('${iteracao.id}', '${iteracao.name}')">${iteracao.path.replace('Mastersaf Interfaces\\', '')}</a></td>
+                        <td><a href="#" class="path-link" onclick="showWorkItems('${iteracao.id}', '${iteracao.name}', selectedAreaPath)">${iteracao.path.replace('Mastersaf Interfaces\\', '')}</a></td>
                         <td>${formatarData(iteracao.attributes.startDate)}</td>
                         <td>${formatarData(iteracao.attributes.finishDate)}</td>
                         <td><span class="${statusClass}">${statusText}</span></td>
@@ -511,6 +531,142 @@ function gerarHTML(iteracoes) {
     </div>
 
     <script>
+        // === FILTRO AREA + ITERATION ===
+        let selectedAreaPath = '';
+        let selectedIterationPath = '';
+        let areaTreeData = null;
+        let iterationTreeData = null;
+
+        const ADO_FILTER_HEADERS = {
+            'Authorization': 'Basic ${token}',
+            'Content-Type': 'application/json'
+        };
+
+        async function initFilters() {
+            try {
+                const [areasResp, iterResp] = await Promise.all([
+                    fetch('https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/_apis/wit/classificationnodes/areas?$depth=10&api-version=7.0', { headers: ADO_FILTER_HEADERS }),
+                    fetch('https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/_apis/wit/classificationnodes/iterations?$depth=10&api-version=7.0', { headers: ADO_FILTER_HEADERS })
+                ]);
+                if (!areasResp.ok || !iterResp.ok) throw new Error('Erro areas:' + areasResp.status + ' iter:' + iterResp.status);
+                areaTreeData = await areasResp.json();
+                iterationTreeData = await iterResp.json();
+                const areaRoot = findNodeByName(areaTreeData, 'Mastersaf Interfaces');
+                const iterRoot = findNodeByName(iterationTreeData, 'Mastersaf Interfaces');
+                if (areaRoot) buildCascade('areaCascade', areaRoot, 'area');
+                if (iterRoot) buildCascade('iterationCascade', iterRoot, 'iteration');
+            } catch (e) {
+                document.getElementById('filterBar').insertAdjacentHTML('beforeend', '<p style="color:red;font-size:12px;margin:6px 0 0">⚠️ Erro ao carregar filtros: ' + e.message + '</p>');
+            }
+        }
+
+        function findNodeByName(node, name) {
+            if (node.name === name) return node;
+            if (node.children) {
+                for (const child of node.children) {
+                    const found = findNodeByName(child, name);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        function buildCascade(containerId, parentNode, type) {
+            const container = document.getElementById(containerId);
+            if (!parentNode || !parentNode.children || parentNode.children.length === 0) return;
+            const select = document.createElement('select');
+            select.style.cssText = 'border:1px solid #aac4e8;border-radius:5px;padding:6px 10px;font-size:12px;background:white;min-width:130px;cursor:pointer;';
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = '';
+            defaultOpt.textContent = '-- selecione --';
+            select.appendChild(defaultOpt);
+            parentNode.children.forEach(function(child) {
+                const opt = document.createElement('option');
+                opt.value = child.name;
+                opt.textContent = child.name;
+                select.appendChild(opt);
+            });
+            select.addEventListener('change', function() {
+                let next = select.nextSibling;
+                while (next) { const rem = next; next = next.nextSibling; container.removeChild(rem); }
+                updateSelectedPath(containerId, type);
+                if (select.value) {
+                    const childNode = parentNode.children.find(function(c) { return c.name === select.value; });
+                    if (childNode && childNode.children && childNode.children.length > 0) {
+                        const arrow = document.createElement('span');
+                        arrow.textContent = '›';
+                        arrow.style.cssText = 'color:#999;font-size:14px;padding:0 2px;';
+                        container.appendChild(arrow);
+                        buildCascade(containerId, childNode, type);
+                    }
+                }
+            });
+            container.appendChild(select);
+        }
+
+        function updateSelectedPath(containerId, type) {
+            const selects = document.getElementById(containerId).querySelectorAll('select');
+            const path = Array.from(selects).map(function(s) { return s.value; }).filter(Boolean).join('\\\\');
+            if (type === 'area') selectedAreaPath = path;
+            else selectedIterationPath = path;
+        }
+
+        function applyFilter() {
+            document.getElementById('tableHiddenBanner').style.display = 'none';
+            document.querySelector('.table-container').style.display = '';
+            document.getElementById('statusFilters').style.display = '';
+            const activeBtn = document.querySelector('.filter-btn.active');
+            const status = activeBtn ? (activeBtn.getAttribute('onclick').match(/'([^']+)'/) || [])[1] || 'all' : 'all';
+            const rows = document.querySelectorAll('#iterationsTable tbody tr');
+            rows.forEach(function(row) {
+                const matchesStatus = status === 'all' || row.dataset.status === status;
+                const rowPath = row.dataset.path || '';
+                const matchesIteration = !selectedIterationPath || rowPath.startsWith(selectedIterationPath);
+                row.style.display = (matchesStatus && matchesIteration) ? '' : 'none';
+            });
+            updateFilterBadge();
+        }
+
+        function clearFilter() {
+            selectedAreaPath = '';
+            selectedIterationPath = '';
+            document.getElementById('areaCascade').innerHTML = '';
+            document.getElementById('iterationCascade').innerHTML = '';
+            const areaRoot = areaTreeData ? findNodeByName(areaTreeData, 'Mastersaf Interfaces') : null;
+            const iterRoot = iterationTreeData ? findNodeByName(iterationTreeData, 'Mastersaf Interfaces') : null;
+            if (areaRoot) buildCascade('areaCascade', areaRoot, 'area');
+            if (iterRoot) buildCascade('iterationCascade', iterRoot, 'iteration');
+            document.querySelector('.table-container').style.display = 'none';
+            document.getElementById('statusFilters').style.display = 'none';
+            document.getElementById('tableHiddenBanner').style.display = '';
+            updateFilterBadge();
+            document.querySelector('.filter-btn.active')?.classList.remove('active');
+            const currentBtn = document.querySelector('.filter-btn[onclick*="current"]'); if (currentBtn) currentBtn.classList.add('active');
+        }
+
+        function updateFilterBadge() {
+            let badge = document.getElementById('filterActiveBadge');
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.id = 'filterActiveBadge';
+                badge.className = 'stat-badge';
+                document.querySelector('.header-stats').appendChild(badge);
+            }
+            if (selectedAreaPath || selectedIterationPath) {
+                badge.textContent = (selectedAreaPath || 'Todas as áreas') + ' · ' + (selectedIterationPath || 'Todas as iterações');
+                badge.style.display = '';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.table-container').style.display = 'none';
+            document.getElementById('statusFilters').style.display = 'none';
+            initFilters();
+        });
+        // === FIM FILTRO ===
+
         function filterTable(status, button) {
             const rows = document.querySelectorAll('#iterationsTable tbody tr');
             const buttons = document.querySelectorAll('.filter-btn');
@@ -519,12 +675,15 @@ function gerarHTML(iteracoes) {
             button.classList.add('active');
 
             rows.forEach(row => {
-                row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+                const matchesStatus = status === 'all' || row.dataset.status === status;
+                const rowPath = row.dataset.path || '';
+                const matchesIteration = !selectedIterationPath || rowPath.startsWith(selectedIterationPath);
+                row.style.display = (matchesStatus && matchesIteration) ? '' : 'none';
             });
 
         }
 
-        async function showWorkItems(iterationId, iterationName) {
+        async function showWorkItems(iterationId, iterationName, areaPath) {
             const modal = document.getElementById('workItemsModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalContent = document.getElementById('modalContent');
@@ -576,6 +735,11 @@ function gerarHTML(iteracoes) {
                                 const fields = workItemData.fields;
 
                                 if (fields['System.WorkItemType'] === 'User Story') {
+                                    if (areaPath) {
+                                        const fullArea = 'Mastersaf Interfaces\\\\' + areaPath;
+                                        const itemArea = fields['System.AreaPath'];
+                                        if (itemArea !== undefined && itemArea !== fullArea && !itemArea.startsWith(fullArea + '\\\\')) continue;
+                                    }
                                     userStoryCount++;
                                     const assignee = (fields['System.AssignedTo'] && fields['System.AssignedTo'].displayName) || '-';
                                     if (assignee !== '-') usersSet.add(assignee);

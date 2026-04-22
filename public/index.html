@@ -48,6 +48,26 @@
         .workitem-id:hover { text-decoration: underline; }
         .btn-analise-ia { padding: 3px 8px; background: #1e4d8c; color: white; border: none; border-radius: 4px; font-size: 11px; cursor: pointer; white-space: nowrap; font-weight: 600; }
         .btn-analise-ia:hover { background: #1a3a5c; }
+        .btn-analise-ia:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-zendesk { padding: 3px 8px; background: #17a589; color: white; border: none; border-radius: 4px; font-size: 11px; cursor: pointer; white-space: nowrap; font-weight: 600; }
+        .btn-zendesk:hover { background: #148a72; }
+        .btn-zendesk:disabled { background: #aaa; cursor: not-allowed; }
+        .btn-extracao { background: #388e3c; color: white; border: none; padding: 6px 14px; border-radius: 3px; cursor: pointer; font-size: 12px; font-weight: 600; margin-top: 10px; }
+        .btn-extracao:hover { opacity: 0.85; }
+        .btn-extracao:disabled { opacity: 0.5; cursor: not-allowed; }
+        .extracao-result { background: #e8f5e9; border-left: 4px solid #388e3c; padding: 10px; margin: 8px 0; border-radius: 4px; color: #374151; }
+        .extracao-result h4 { color: #2e7d32; margin: 0 0 8px; font-size: 13px; }
+        .ado-result { background: #e3edf7; border-left: 4px solid #1e4d8c; padding: 10px; margin: 8px 0; border-radius: 4px; color: #374151; }
+        .ado-result h4 { color: #1e4d8c; margin: 0 0 8px; font-size: 13px; }
+        .ia-result { background: #edf2f7; border-left: 4px solid #2c5f9e; padding: 10px; margin: 8px 0; border-radius: 4px; color: #374151; }
+        .ia-result h4 { margin: 0 0 8px; color: #1e4d8c; font-size: 13px; }
+        .ia-content h4 { color: #1a3a5c; margin: 10px 0 4px; font-size: 13px; font-weight: 700; }
+        .ia-content ul { margin: 3px 0 6px 16px; padding: 0; }
+        .ia-content li { margin: 2px 0; font-size: 12px; color: #374151; }
+        .ia-content p { margin: 3px 0; font-size: 12px; color: #374151; }
+        .detail-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .detail-table td { padding: 4px 8px; border-bottom: 1px solid #d1d9e0; vertical-align: top; color: #374151; }
+        .detail-table td:first-child { font-weight: 600; width: 130px; color: #495057; }
         .loading { text-align: center; padding: 20px; color: #666; }
         .error { background: #fce4e4; border-left: 4px solid #e74c3c; padding: 10px; margin: 8px 0; border-radius: 4px; color: #c0392b; }
     </style>
@@ -126,6 +146,32 @@
                     </select>
                 </div>
                 <div id="modalContent" class="loading">Carregando work items...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Verificar -->
+    <div id="analiseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1e4d8c 0%, #0d2137 100%);">
+                <h2 id="analiseModalTitle" style="font-size:1em">Verificar</h2>
+                <span class="close" onclick="closeAnaliseModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="analiseModalContent" style="padding:16px;overflow-y:auto;max-height:calc(80vh - 80px);background:#f4f6f8;color:#374151;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Zendesk -->
+    <div id="zendeskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #17a589 0%, #0e6b57 100%);">
+                <h2 id="zdModalTitle" style="font-size:1em">🎫 Zendesk</h2>
+                <span class="close" onclick="closeZendeskModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="zdModalBody" style="padding:16px;overflow-y:auto;max-height:calc(80vh - 80px);background:#f4f6f8;color:#374151;"></div>
             </div>
         </div>
     </div>
@@ -361,7 +407,7 @@
                     return;
                 }
 
-                var html = '<p><strong>Filtrando User Stories...</strong></p><table class="workitems-table"><thead><tr><th>ID</th><th>Tipo</th><th>Título</th><th>Estado</th><th>Responsável</th><th>Link</th></tr></thead><tbody>';
+                var html = '<p><strong>Filtrando User Stories...</strong></p><table class="workitems-table"><thead><tr><th>ID</th><th>Tipo</th><th>Título</th><th>Estado</th><th>Responsável</th><th>Link</th><th>Verificar</th><th>Zendesk</th></tr></thead><tbody>';
                 var userStoryCount = 0;
                 var usersSet = new Set();
 
@@ -378,6 +424,12 @@
                         userStoryCount++;
                         var assignee = (f['System.AssignedTo'] && f['System.AssignedTo'].displayName) || '-';
                         if (assignee !== '-') usersSet.add(assignee);
+                        var desc = (f['System.Title'] || '') + ' ' + (f['System.Description'] || '');
+                        var zdMatch = desc.match(/Ticket_(\d+)/i) || desc.match(/TKT(\d+)/i);
+                        var zdId = zdMatch ? zdMatch[1] : null;
+                        var zdCell = zdId
+                            ? '<td><button class="btn-zendesk" onclick="previewZendesk(' + wi.id + ', ' + zdId + ')">🎫 Sincronizar</button></td>'
+                            : '<td style="color:#aaa;text-align:center;font-size:12px">—</td>';
                         html += '<tr data-user="' + esc(assignee) + '">'
                             + '<td>' + wi.id + '</td>'
                             + '<td>' + esc(f['System.WorkItemType'] || 'N/A') + '</td>'
@@ -385,6 +437,8 @@
                             + '<td>' + esc(f['System.State'] || 'N/A') + '</td>'
                             + '<td>' + esc(assignee) + '</td>'
                             + '<td><a href="' + wi._links.html.href + '" target="_blank" class="workitem-link">Ver no Azure</a></td>'
+                            + '<td><button class="btn-analise-ia" onclick="analisarWorkItem(' + wi.id + ')">Verificar</button></td>'
+                            + zdCell
                             + '</tr>';
                     } catch (e) { /* item com erro — ignora */ }
                 }
@@ -436,7 +490,7 @@
                     return;
                 }
 
-                var html = '<table class="workitems-table"><thead><tr><th>ID</th><th>Tipo</th><th>Título</th><th>Estado</th><th>Responsável</th><th>Link</th></tr></thead><tbody>';
+                var html = '<table class="workitems-table"><thead><tr><th>ID</th><th>Tipo</th><th>Título</th><th>Estado</th><th>Responsável</th><th>Link</th><th>Verificar</th><th>Zendesk</th></tr></thead><tbody>';
                 var usersSet = new Set();
                 var count = 0;
 
@@ -447,6 +501,12 @@
                         count++;
                         var assignee = (f['System.AssignedTo'] && f['System.AssignedTo'].displayName) || '-';
                         if (assignee !== '-') usersSet.add(assignee);
+                        var desc = (f['System.Title'] || '') + ' ' + (f['System.Description'] || '');
+                        var zdMatch = desc.match(/Ticket_(\d+)/i) || desc.match(/TKT(\d+)/i);
+                        var zdId = zdMatch ? zdMatch[1] : null;
+                        var zdCell = zdId
+                            ? '<td><button class="btn-zendesk" onclick="previewZendesk(' + wi.id + ', ' + zdId + ')">🎫 Sincronizar</button></td>'
+                            : '<td style="color:#aaa;text-align:center;font-size:12px">—</td>';
                         html += '<tr data-user="' + esc(assignee) + '">'
                             + '<td>' + wi.id + '</td>'
                             + '<td>' + esc(f['System.WorkItemType'] || 'N/A') + '</td>'
@@ -454,6 +514,8 @@
                             + '<td>' + esc(f['System.State'] || 'N/A') + '</td>'
                             + '<td>' + esc(assignee) + '</td>'
                             + '<td><a href="' + wi._links.html.href + '" target="_blank" class="workitem-link">Ver no Azure</a></td>'
+                            + '<td><button class="btn-analise-ia" onclick="analisarWorkItem(' + wi.id + ')">Verificar</button></td>'
+                            + zdCell
                             + '</tr>';
                     } catch (e) { /* item com erro — ignora */ }
                 }
@@ -478,10 +540,366 @@
             document.getElementById('workItemsModal').style.display = 'none';
         }
 
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('workItemsModal')) closeModal();
+            if (event.target === document.getElementById('analiseModal')) closeAnaliseModal();
+            if (event.target === document.getElementById('zendeskModal')) closeZendeskModal();
+        };
+
         function filterByUser(user) {
             document.querySelectorAll('#modalContent .workitems-table tbody tr').forEach(function(row) {
                 row.style.display = (!user || row.dataset.user === user) ? '' : 'none';
             });
+        }
+
+        // ==========================================
+        // VERIFICAR / ANÁLISE IA
+        // ==========================================
+        var lastSuccessSapCode = '';
+
+        function closeAnaliseModal() { document.getElementById('analiseModal').style.display = 'none'; }
+        function closeZendeskModal() { document.getElementById('zendeskModal').style.display = 'none'; }
+
+        function formatarAnaliseIA(text) {
+            if (!text) return '<em>Sem resposta</em>';
+            var safe = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            var lines = safe.split('\n');
+            var html = '';
+            var inList = false;
+            for (var j = 0; j < lines.length; j++) {
+                var line = lines[j];
+                if (line.indexOf('## ') === 0) {
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += '<h4 style="color:#1e4d8c;margin:12px 0 5px;font-size:14px">' + line.slice(3) + '</h4>';
+                } else if (line.indexOf('- ') === 0 || line.indexOf('* ') === 0) {
+                    if (!inList) { html += '<ul style="margin:4px 0 6px 18px">'; inList = true; }
+                    html += '<li style="margin:2px 0;font-size:13px">' + line.slice(2) + '</li>';
+                } else if (line.trim() === '') {
+                    if (inList) { html += '</ul>'; inList = false; }
+                } else {
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += '<p style="margin:3px 0;font-size:13px">' + line + '</p>';
+                }
+            }
+            if (inList) html += '</ul>';
+            return html;
+        }
+
+        function analisarWorkItem(workItemId) {
+            var modal = document.getElementById('analiseModal');
+            var content = document.getElementById('analiseModalContent');
+            document.getElementById('analiseModalTitle').textContent = 'Work Item #' + workItemId + ' — O que deseja fazer?';
+            content.innerHTML =
+                '<div style="display:flex;flex-direction:column;gap:16px;padding:8px 0">' +
+                '<div style="background:#fff;border:2px solid #1e4d8c;border-radius:8px;padding:18px 20px;cursor:pointer" onclick="closeAnaliseModal();_analisarWorkItemCompleto(' + workItemId + ',null)">' +
+                '<div style="font-size:15px;font-weight:700;color:#1e4d8c;margin-bottom:6px">🔍 Analisar ADO e Programa</div>' +
+                '<div style="font-size:12px;color:#555">Consulta o Work Item no ADO, busca o código no SAP (Z_IN_PGM) e realiza análise com IA.</div>' +
+                '</div>' +
+                '<div style="background:#fff;border:2px solid #388e3c;border-radius:8px;padding:18px 20px;cursor:pointer" onclick="closeAnaliseModal();_abrirPainelRFC(' + workItemId + ')">' +
+                '<div style="font-size:15px;font-weight:700;color:#388e3c;margin-bottom:6px">⚡ Executar RFC / Validar</div>' +
+                '<div style="font-size:12px;color:#555">Vai direto para os botões EXECUTA RFC e VALIDAR, sem análise de código.</div>' +
+                '</div>' +
+                '</div>';
+            modal.style.display = 'block';
+        }
+
+        async function _analisarWorkItemCompleto(workItemId, manualZsafe) {
+            var modal = document.getElementById('analiseModal');
+            var content = document.getElementById('analiseModalContent');
+            document.getElementById('analiseModalTitle').textContent = 'Verificar — Work Item #' + workItemId;
+            content.innerHTML = '<div class="loading">⏳ Buscando dados do Azure DevOps...</div>';
+            modal.style.display = 'block';
+
+            var adoHtml = '', adoSpec = '';
+            try {
+                var adoData = await adoProxy(ADO_BASE + '/_apis/wit/workitems/' + workItemId + '?$expand=all&api-version=7.0');
+                var f = adoData.fields || {};
+                var title = f['System.Title'] || '';
+                var descRaw = f['System.Description'] ? f['System.Description'].replace(/<\/?(p|div|br|li|tr)[^>]*>/gi, ' ').replace(/<[^>]*>/g, '') : '';
+                adoSpec = 'Título: ' + title + '\nEstado: ' + (f['System.State'] || '') + '\nDescrição:\n' + descRaw;
+                adoHtml = '<div class="ado-result"><h4>🔵 Azure DevOps — Work Item #' + workItemId + '</h4>' +
+                    '<table class="detail-table">' +
+                    '<tr><td>Título</td><td>' + (title || '-') + '</td></tr>' +
+                    '<tr><td>Tipo</td><td>' + (f['System.WorkItemType'] || '-') + '</td></tr>' +
+                    '<tr><td>Estado</td><td>' + (f['System.State'] || '-') + '</td></tr>' +
+                    '<tr><td>Responsável</td><td>' + ((f['System.AssignedTo'] && f['System.AssignedTo'].displayName) || '-') + '</td></tr>' +
+                    '<tr><td>Sprint</td><td>' + (f['System.IterationPath'] || '-') + '</td></tr>' +
+                    '<tr><td>Descrição</td><td>' + (descRaw || '-') + '</td></tr>' +
+                    '</table></div>';
+            } catch (e) {
+                adoHtml = '<div class="error"><h4>❌ ADO — Erro ao buscar detalhes</h4><p>' + e.message + '</p></div>';
+            }
+
+            var zsafeCodes = [];
+            var commentsText = '';
+            try {
+                var commData = await adoProxy(ADO_BASE + '/_apis/wit/workitems/' + workItemId + '/comments?api-version=7.0-preview.3');
+                (commData.comments || []).forEach(function(c) {
+                    var txt = (c.text || '').replace(/<\/?(p|div|br|li|tr)[^>]*>/gi, ' ').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+                    commentsText += txt + '\n';
+                    var matches = txt.match(/Processo:\s*(ZSAFE[A-Z0-9]+)/gi);
+                    if (matches) matches.forEach(function(m) {
+                        var code = m.replace(/Processo:\s*/i, '').trim().toUpperCase();
+                        if (code && zsafeCodes.indexOf(code) === -1) zsafeCodes.push(code);
+                    });
+                });
+                if (commentsText) adoSpec += '\n\nComentários:\n' + commentsText;
+            } catch (e) { /* silent */ }
+
+            var extProcesso = '', extEmpresa = '', extDataLow = '', extDataHigh = '';
+            var mProc = commentsText.match(/Processo:\s*(ZSAFE[A-Z0-9]+)/i);
+            if (mProc) extProcesso = mProc[1].trim().toUpperCase();
+            var mEmp = commentsText.match(/Empresa:\s*(\S+)/i);
+            if (mEmp) extEmpresa = mEmp[1].trim();
+            var mPer = commentsText.match(/Per[ií]odo:\s*(\d{2}\.\d{2}\.\d{4})\s+a\s+(\d{2}\.\d{2}\.\d{4})/i);
+            if (mPer) { extDataLow = mPer[1]; extDataHigh = mPer[2]; }
+
+            var missing = [];
+            if (!extProcesso) missing.push('Processo: ZSAFE...');
+            if (!extEmpresa) missing.push('Empresa: XXXX');
+            if (!extDataLow || !extDataHigh) missing.push('Período: DD.MM.AAAA a DD.MM.AAAA');
+            var extracaoHtml = '<div style="margin-top:10px">' +
+                (missing.length > 0 ? '<div style="background:#fff8e1;border-left:3px solid #f59e0b;padding:8px 12px;border-radius:0 4px 4px 0;margin-bottom:8px;font-size:12px;color:#7c5a00">⚠️ Parâmetros incompletos na descrição do ADO: <strong>' + missing.join(' | ') + '</strong></div>' : '') +
+                '<button id="btnExtracaoSAP" class="btn-extracao" data-wid="' + workItemId + '" data-proc="' + extProcesso + '" data-emp="' + extEmpresa + '" data-low="' + extDataLow + '" data-high="' + extDataHigh + '" onclick="var b=this;executarExtracaoSAP(b.dataset.wid,b.dataset.proc,b.dataset.emp,b.dataset.low,b.dataset.high)">EXECUTA RFC</button>' +
+                ' <button id="btnValidar" class="btn-extracao" style="background:#1e4d8c;" data-wid="' + workItemId + '" onclick="validarExtracao(this.dataset.wid)">VALIDAR</button>' +
+                '<div id="extracaoResult"></div></div>';
+
+            if (manualZsafe) zsafeCodes = [manualZsafe.toUpperCase()];
+
+            if (zsafeCodes.length === 0) {
+                content.innerHTML =
+                    '<div class="error" style="margin-bottom:12px">⚠️ Nenhum processo encontrado nos comentários do Work Item.<br>Esperado: comentário com "Processo: ZSAFE..."</div>' +
+                    '<p style="margin-bottom:8px;font-size:14px">Informe o código do processo:</p>' +
+                    '<div style="display:flex;gap:8px;margin-bottom:6px">' +
+                    '<input id="zsafeInput" type="text" placeholder="Ex: ZSAFE00001" style="flex:1;padding:8px;border:1px solid #d1d5db;border-radius:4px;font-size:14px;text-transform:uppercase">' +
+                    '<button onclick="reConsultarZsafe(' + workItemId + ')" style="background:#1e4d8c;color:white;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight:600">Consultar</button>' +
+                    '</div>' +
+                    '<p id="zsafeError" style="color:red;font-size:12px;display:none">❌ Informe o código do processo.</p>' +
+                    adoHtml;
+                return;
+            }
+
+            var allHtml = '';
+            for (var i = 0; i < zsafeCodes.length; i++) {
+                var zsafe = zsafeCodes[i];
+                var sapCode = '', sapHtml = '';
+                content.innerHTML = allHtml + '<div class="loading">⏳ Consultando SAP — ' + zsafe + ' (' + (i+1) + '/' + zsafeCodes.length + ')...</div>';
+                try {
+                    var sapData = await (await fetch('/api/analise?workItemId=' + workItemId + '&iZsafe=' + encodeURIComponent(zsafe))).json();
+                    if (sapData.success) { sapCode = JSON.stringify(sapData.data, null, 2); lastSuccessSapCode = sapCode; }
+                    else sapHtml = '<div class="error"><h4>❌ SAP — Erro na RFC (' + zsafe + ')</h4><p>' + sapData.error + '</p></div>';
+                } catch (e) {
+                    sapHtml = '<div class="error"><h4>❌ SAP — Servidor não disponível (' + zsafe + ')</h4><p>Inicie o servidor SAP local.</p></div>';
+                }
+                var iaHtml = '';
+                if (sapCode) {
+                    content.innerHTML = allHtml + sapHtml + '<div class="loading">⏳ Analisando com IA — ' + zsafe + '... (pode levar ~30s)</div>';
+                    try {
+                        var iaData = await (await fetch('/api/ia-analise', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adoSpec: adoSpec, sapCode: sapCode, zsafe: zsafe, workItemId: String(workItemId) }) })).json();
+                        if (iaData.success) iaHtml = '<div class="ia-result"><h4>Verificar — ' + zsafe + '</h4><div class="ia-content">' + formatarAnaliseIA(iaData.analysis) + '</div></div>';
+                        else iaHtml = '<div class="error"><h4>❌ IA — Erro na análise (' + zsafe + ')</h4><p>' + iaData.error + '</p></div>';
+                    } catch (e) {
+                        iaHtml = '<div class="error"><h4>❌ IA — Não disponível</h4><p>' + e.message + '</p></div>';
+                    }
+                }
+                allHtml += sapHtml + iaHtml;
+            }
+            content.innerHTML = allHtml + adoHtml + extracaoHtml;
+        }
+
+        async function reConsultarZsafe(workItemId) {
+            var zsafe = (document.getElementById('zsafeInput').value || '').trim().toUpperCase();
+            if (!zsafe) { document.getElementById('zsafeError').style.display = 'block'; return; }
+            document.getElementById('zsafeError').style.display = 'none';
+            await _analisarWorkItemCompleto(workItemId, zsafe);
+        }
+
+        async function _abrirPainelRFC(workItemId) {
+            var modal = document.getElementById('analiseModal');
+            var content = document.getElementById('analiseModalContent');
+            document.getElementById('analiseModalTitle').textContent = 'RFC — Work Item #' + workItemId;
+            content.innerHTML = '<div class="loading">⏳ Buscando parâmetros do ADO...</div>';
+            modal.style.display = 'block';
+
+            var extProcesso = '', extEmpresa = '', extDataLow = '', extDataHigh = '';
+            try {
+                var commData = await adoProxy(ADO_BASE + '/_apis/wit/workitems/' + workItemId + '/comments?api-version=7.0-preview.3');
+                var commentsText = (commData.comments || []).map(function(c) {
+                    return (c.text || '').replace(/<\/?(p|div|br|li|tr)[^>]*>/gi, ' ').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+                }).join('\n');
+                var mProc = commentsText.match(/Processo:\s*(ZSAFE[A-Z0-9]+)/i);
+                if (mProc) extProcesso = mProc[1].trim().toUpperCase();
+                var mEmp = commentsText.match(/Empresa:\s*(\S+)/i);
+                if (mEmp) extEmpresa = mEmp[1].trim();
+                var mPer = commentsText.match(/Per[ií]odo:\s*(\d{2}\.\d{2}\.\d{4})\s+a\s+(\d{2}\.\d{2}\.\d{4})/i);
+                if (mPer) { extDataLow = mPer[1]; extDataHigh = mPer[2]; }
+            } catch (e) { /* silent */ }
+
+            var missing = [];
+            if (!extProcesso) missing.push('Processo: ZSAFE...');
+            if (!extEmpresa) missing.push('Empresa: XXXX');
+            if (!extDataLow || !extDataHigh) missing.push('Período: DD.MM.AAAA a DD.MM.AAAA');
+            content.innerHTML =
+                (missing.length > 0 ? '<div style="background:#fff8e1;border-left:3px solid #f59e0b;padding:8px 12px;border-radius:0 4px 4px 0;margin-bottom:12px;font-size:12px;color:#7c5a00">⚠️ Parâmetros incompletos: <strong>' + missing.join(' | ') + '</strong></div>' : '') +
+                '<div style="margin-bottom:10px">' +
+                '<button id="btnExtracaoSAP" class="btn-extracao" data-wid="' + workItemId + '" data-proc="' + extProcesso + '" data-emp="' + extEmpresa + '" data-low="' + extDataLow + '" data-high="' + extDataHigh + '" onclick="var b=this;executarExtracaoSAP(b.dataset.wid,b.dataset.proc,b.dataset.emp,b.dataset.low,b.dataset.high)">EXECUTA RFC</button>' +
+                ' <button id="btnValidar" class="btn-extracao" style="background:#1e4d8c;" data-wid="' + workItemId + '" onclick="validarExtracao(this.dataset.wid)">VALIDAR</button>' +
+                '<div id="extracaoResult"></div></div>';
+        }
+
+        async function executarExtracaoSAP(workItemId, processo, empresa, dataLow, dataHigh) {
+            var btn = document.getElementById('btnExtracaoSAP');
+            var resultDiv = document.getElementById('extracaoResult');
+            if (!processo || !empresa || !dataLow || !dataHigh) {
+                if (resultDiv) resultDiv.innerHTML = '<div class="error">❌ Preencha na descrição do ADO: Processo, Empresa e Período antes de executar.</div>';
+                return;
+            }
+            if (btn) btn.disabled = true;
+            if (resultDiv) resultDiv.innerHTML = '<div class="loading">⏳ Executando RFC Z_IN_EXEC_EXT...</div>';
+            try {
+                var data = await (await fetch('/api/rfc-exec', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ params: { WA_PARAMETROS: { BUKRS_LOW: empresa, BUKRS_HIGH: empresa, DATE_LOW: dataLow, DATE_HIGH: dataHigh, PROCESSO: processo } } }) })).json();
+                if (data.success) {
+                    resultDiv.innerHTML = '<div class="extracao-result"><h4>✅ Extração SAP — ' + processo + '</h4><table class="detail-table"><tr><td>O_LOTE</td><td>' + (data.O_LOTE || '-') + '</td></tr><tr><td>NUM_LOG</td><td>' + (data.NUM_LOG || '-') + '</td></tr><tr><td>O_OBI</td><td>' + (data.O_OBI || '-') + '</td></tr></table></div>';
+                    if (data.NUM_LOG) {
+                        try {
+                            var commentBody = 'Número do Teste: ' + data.NUM_LOG + (data.O_LOTE ? '\nLOTE: ' + data.O_LOTE : '');
+                            await adoProxy(ADO_BASE + '/_apis/wit/workitems/' + workItemId + '/comments?api-version=7.0-preview.3', 'POST', { text: commentBody });
+                            resultDiv.innerHTML += '<div style="font-size:11px;color:#388e3c;margin-top:6px">✅ Comentário adicionado no ADO: ' + commentBody + '</div>';
+                        } catch (eAdo) {
+                            resultDiv.innerHTML += '<div style="font-size:11px;color:#dc3545;margin-top:6px">⚠️ Não foi possível atualizar o ADO: ' + eAdo.message + '</div>';
+                        }
+                    }
+                } else {
+                    resultDiv.innerHTML = '<div class="error"><h4>❌ Erro na Extração SAP</h4><p>' + (data.error || 'Erro desconhecido') + '</p></div>';
+                }
+            } catch (e) {
+                resultDiv.innerHTML = '<div class="error"><h4>❌ Servidor não disponível</h4><p>' + e.message + '</p></div>';
+            }
+            if (btn) btn.disabled = false;
+        }
+
+        async function validarExtracao(workItemId) {
+            var btn = document.getElementById('btnValidar');
+            var resultDiv = document.getElementById('extracaoResult');
+            if (btn) btn.disabled = true;
+            if (resultDiv) resultDiv.innerHTML = '<div class="loading">⏳ Lendo comentários do ADO...</div>';
+            try {
+                var commData = await adoProxy(ADO_BASE + '/_apis/wit/workitems/' + workItemId + '/comments?api-version=7.0-preview.3');
+                var numLogs = [];
+                (commData.comments || []).forEach(function(c) {
+                    var txt = (c.text || '').replace(/<\/?(p|div|br|li|tr)[^>]*>/gi, ' ').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+                    var m = txt.match(/Número do Teste:\s*([\w\-]+)/i);
+                    if (m) numLogs.push(m[1].trim());
+                });
+                if (numLogs.length < 2) {
+                    resultDiv.innerHTML = '<div style="background:#fff8e1;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:0 4px 4px 0;font-size:12px;color:#7c5a00">⚠️ Validação requer ao menos 2 comentários com "Número do Teste". Encontrado(s): <strong>' + numLogs.length + '</strong></div>';
+                    if (btn) btn.disabled = false;
+                    return;
+                }
+                resultDiv.innerHTML = '<div class="loading">⏳ Executando RFC Z_IN_EXEC_VAL com ' + numLogs.length + ' logs...</div>';
+                var valData = await (await fetch('/api/rfc-val', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ numLogs: numLogs }) })).json();
+                if (valData.success) {
+                    var oJson = valData.O_JSON || [];
+                    var tCampos = valData.T_CAMPOS || [];
+                    resultDiv.innerHTML = '<div id="iaValResult"><div class="loading">⏳ Preparando análise por SAFX...</div></div>';
+                    var iaValDiv = document.getElementById('iaValResult');
+                    var bySafx = {};
+                    oJson.forEach(function(item) { var s = item.SAFX || 'SEM_SAFX'; if (!bySafx[s]) bySafx[s] = []; bySafx[s].push(item); });
+                    var camposPorSafx = {};
+                    tCampos.forEach(function(c) { var s = c.COD_SAFX || ''; if (!camposPorSafx[s]) camposPorSafx[s] = []; camposPorSafx[s].push({ NOME_CAMPO: c.NOME_CAMPO, IND_OBRIG: c.IND_OBRIG }); });
+                    var safxKeys = Object.keys(bySafx).sort();
+                    var concluidos = 0;
+                    iaValDiv.innerHTML = '<div class="loading">⏳ Analisando ' + safxKeys.length + ' SAFXs em paralelo... (0/' + safxKeys.length + ' concluídos)</div>';
+                    var safxAnalyses = await Promise.all(safxKeys.map(async function(safx) {
+                        for (var t = 1; t <= 2; t++) {
+                            try {
+                                var sd = await (await fetch('/api/ia-val-safx', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ safx: safx, items: bySafx[safx], camposChave: camposPorSafx[safx] || [] }) })).json();
+                                concluidos++;
+                                iaValDiv.innerHTML = '<div class="loading">⏳ Analisando em paralelo... (' + concluidos + '/' + safxKeys.length + ' concluídos)</div>';
+                                if (sd.success) return { safx: safx, analysis: sd.analysis };
+                                if (t === 2) return { safx: safx, analysis: 'Erro: ' + sd.error };
+                            } catch (es) {
+                                if (t === 2) { concluidos++; return { safx: safx, analysis: 'Erro: ' + es.message }; }
+                                await new Promise(function(r) { setTimeout(r, 2000); });
+                            }
+                        }
+                    }));
+                    iaValDiv.innerHTML = '<div class="loading">⏳ Consolidando análises (' + safxKeys.length + ' SAFXs)...</div>';
+                    try {
+                        var consolData = await (await fetch('/api/ia-val-consolidar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ analyses: safxAnalyses }) })).json();
+                        if (consolData.success) {
+                            iaValDiv.innerHTML = '<div class="ia-result"><h4>✅ Análise de Validação</h4><div class="ia-content">' + formatarAnaliseIA(consolData.analysis) + '</div></div>';
+                            try {
+                                await adoProxy(ADO_BASE + '/_apis/wit/workitems/' + workItemId + '/comments?api-version=7.0-preview.3', 'POST', { text: consolData.analysis });
+                                iaValDiv.innerHTML += '<div style="font-size:11px;color:#388e3c;margin-top:6px">✅ Análise registrada no ADO.</div>';
+                            } catch (eAdo) {
+                                iaValDiv.innerHTML += '<div style="font-size:11px;color:#dc3545;margin-top:6px">⚠️ Não foi possível registrar no ADO: ' + eAdo.message + '</div>';
+                            }
+                        } else {
+                            iaValDiv.innerHTML = '<div class="error"><h4>❌ Erro na Consolidação</h4><p>' + (consolData.error || 'Erro desconhecido') + '</p></div>';
+                        }
+                    } catch (eConsol) {
+                        iaValDiv.innerHTML = '<div class="error"><h4>❌ IA indisponível</h4><p>' + eConsol.message + '</p></div>';
+                    }
+                } else {
+                    resultDiv.innerHTML = '<div class="error"><h4>❌ Erro na Validação</h4><p>' + (valData.error || 'Erro desconhecido') + '</p></div>';
+                }
+            } catch (e) {
+                resultDiv.innerHTML = '<div class="error"><h4>❌ Erro</h4><p>' + e.message + '</p></div>';
+            }
+            if (btn) btn.disabled = false;
+        }
+
+        async function previewZendesk(workItemId, zendeskId) {
+            var modal = document.getElementById('zendeskModal');
+            var title = document.getElementById('zdModalTitle');
+            var body = document.getElementById('zdModalBody');
+            title.textContent = '🎫 Zendesk — Ticket #' + zendeskId;
+            body.innerHTML = '<div class="loading">⏳ Buscando dados do Zendesk...</div>';
+            modal.style.display = 'block';
+            try {
+                var data = await (await fetch('/api/zendesk/ticket?id=' + zendeskId)).json();
+                if (!data.success) { body.innerHTML = '<div class="error">❌ ' + (data.error || 'Erro ao buscar ticket') + '</div>'; return; }
+                var t = data.ticket;
+                var attachmentRows = data.attachments.map(function(a) {
+                    return '<li style="font-size:12px;margin:2px 0">📎 ' + a.file_name + (a.size ? ' (' + Math.round(a.size / 1024) + ' KB)' : '') + '</li>';
+                }).join('');
+                body.innerHTML =
+                    '<table class="detail-table" style="margin-bottom:12px">' +
+                    '<tr><td style="font-weight:600;width:120px">Ticket</td><td>#' + t.id + '</td></tr>' +
+                    '<tr><td style="font-weight:600">Assunto</td><td>' + (t.subject || '-') + '</td></tr>' +
+                    '<tr><td style="font-weight:600">Status</td><td>' + (t.status || '-') + '</td></tr>' +
+                    '<tr><td style="font-weight:600">Comentários</td><td>' + data.comments.length + '</td></tr>' +
+                    '<tr><td style="font-weight:600">Anexos</td><td>' + data.attachments.length + '</td></tr>' +
+                    '</table>' +
+                    (data.attachments.length > 0 ? '<div style="margin-bottom:12px"><strong>Arquivos que serão sincronizados:</strong><ul style="margin:6px 0 0 16px">' + attachmentRows + '</ul></div>' : '') +
+                    '<div style="display:flex;gap:8px;margin-top:16px">' +
+                    '<button class="btn-analise-ia" style="background:#17a589" onclick="confirmZendeskSync(' + workItemId + ', ' + zendeskId + ', this)">✅ Confirmar Sincronização</button>' +
+                    '<button class="btn-analise-ia" style="background:#6c757d" onclick="closeZendeskModal()">Cancelar</button>' +
+                    '</div>';
+            } catch (err) {
+                body.innerHTML = '<div class="error">❌ Erro de conexão: ' + err.message + '</div>';
+            }
+        }
+
+        async function confirmZendeskSync(workItemId, zendeskId, btn) {
+            var body = document.getElementById('zdModalBody');
+            if (btn) btn.disabled = true;
+            body.innerHTML += '<div class="loading" style="margin-top:12px">⏳ Sincronizando com ADO...</div>';
+            try {
+                var data = await (await fetch('/api/zendesk/sync-to-ado', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ workItemId: workItemId, zendeskTicketId: zendeskId }) })).json();
+                if (!data.success) { body.innerHTML = '<div class="error">❌ ' + (data.error || 'Erro na sincronização') + '</div>'; return; }
+                var syncedList = (data.syncedFiles || []).map(function(f) { return '<li style="font-size:12px;margin:2px 0">📎 ' + f + '</li>'; }).join('');
+                var errorList = (data.errors || []).map(function(e) { return '<li style="font-size:12px;color:#c0392b;margin:2px 0">⚠️ ' + e + '</li>'; }).join('');
+                body.innerHTML =
+                    '<div style="background:#d4edda;border-left:4px solid #28a745;padding:10px 14px;border-radius:4px;margin-bottom:12px">✅ <strong>Sincronização concluída!</strong></div>' +
+                    '<table class="detail-table"><tr><td style="font-weight:600;width:160px">Comentário ADO</td><td>' + (data.commentAdded ? '✅ Adicionado' : '❌ Falhou') + '</td></tr><tr><td style="font-weight:600">Anexos sincronizados</td><td>' + data.attachmentsSynced + '</td></tr></table>' +
+                    (syncedList ? '<ul style="margin:8px 0 0 16px">' + syncedList + '</ul>' : '') +
+                    (errorList ? '<div style="margin-top:10px"><strong>Erros:</strong><ul style="margin:4px 0 0 16px">' + errorList + '</ul></div>' : '') +
+                    '<button class="btn-analise-ia" style="background:#6c757d;margin-top:14px" onclick="closeZendeskModal()">Fechar</button>';
+            } catch (err) {
+                body.innerHTML = '<div class="error">❌ Erro de conexão: ' + err.message + '</div>';
+            }
         }
 
         // ==========================================

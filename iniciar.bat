@@ -20,28 +20,26 @@ REM Adiciona DLLs SAP ao PATH
 set "RFC_DLL=%~dp0..\nwrfcsdk"
 if exist "%RFC_DLL%" set "PATH=%RFC_DLL%;%PATH%"
 
-REM Mata instancia anterior do servidor na porta 3001
-for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr /R ":3001[^0-9]"') do (
+REM Mata instancia anterior do servidor na porta 80
+for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr /R ":80 "') do (
     taskkill /PID %%a /F >nul 2>&1
 )
 timeout /t 1 /nobreak >nul
 
-echo [1/4] Liberando porta 3001 no firewall...
-netsh advfirewall firewall delete rule name="ADO Integra 3001" >nul 2>&1
-netsh advfirewall firewall add rule name="ADO Integra 3001" dir=in action=allow protocol=TCP localport=3001 >nul 2>&1
+echo [1/4] Liberando portas no firewall...
+netsh advfirewall firewall delete rule name="ADO Integra 80" >nul 2>&1
+netsh advfirewall firewall add rule name="ADO Integra 80" dir=in action=allow protocol=TCP localport=80 >nul 2>&1
+netsh advfirewall firewall delete rule name="ADO Web 3000" >nul 2>&1
+netsh advfirewall firewall add rule name="ADO Web 3000" dir=in action=allow protocol=TCP localport=3000 >nul 2>&1
 
-echo [2/4] Gerando lista de iteracoes ADO...
-node busca_ado.js
-if errorlevel 1 (
-    echo [ERRO] Falha ao gerar HTML. Verifique o arquivo .env
-    pause
-    exit /b 1
-)
-
-echo.
-echo [3/4] Iniciando servidor SAP + IA...
+echo [2/4] Iniciando servidor SAP + IA (porta 80)...
 start "" /B node "..\sap-mcp-server\api-server.js"
 timeout /t 3 /nobreak >nul
+
+echo.
+echo [3/4] Iniciando servidor Web ADO (porta 3000)...
+start "" /B node "%~dp0server.js"
+timeout /t 2 /nobreak >nul
 
 echo.
 echo [4/4] Detectando IP da maquina na rede...
@@ -54,13 +52,12 @@ set "LOCAL_IP=%LOCAL_IP: =%"
 
 echo.
 echo ============================================
-echo   Servidor rodando!
+echo   Servidores rodando!
 echo.
-echo   Acesso local:  http://localhost:3001
-echo   Acesso da rede: http://%LOCAL_IP%:3001
+echo   [Web ADO]  http://localhost:3000
+echo   [Web ADO]  http://%LOCAL_IP%:3000  ^<-- compartilhe este
 echo.
-echo   Compartilhe com seus colegas:
-echo   http://%LOCAL_IP%:3001
+echo   [SAP/IA]   http://localhost
 echo ============================================
 echo.
 echo   Mantenha esta janela aberta.
@@ -70,6 +67,6 @@ echo.
 pause
 
 REM Ao fechar: mata o servidor
-for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr /R ":3001[^0-9]"') do (
+for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr /R ":80 "') do (
     taskkill /PID %%a /F >nul 2>&1
 )

@@ -132,6 +132,17 @@
 
     <script>
         // ==========================================
+        // XSS ESCAPE HELPER
+        // ==========================================
+        function esc(s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // ==========================================
         // PROXY HELPER — todas as chamadas ADO passam aqui
         // ==========================================
         async function adoProxy(url, method, body) {
@@ -165,6 +176,7 @@
         }
 
         function buildTable(iteracoes) {
+            iteracoesData = iteracoes;
             var countPast = 0, countCurrent = 0, countFuture = 0;
             var tbody = document.getElementById('iterationsBody');
             tbody.innerHTML = '';
@@ -185,8 +197,8 @@
                 if (timeFrame !== 'current') tr.style.display = 'none';
 
                 tr.innerHTML = '<td>' + (index + 1) + '</td>'
-                    + '<td>' + iteracao.name + '</td>'
-                    + '<td><a href="#" class="path-link" onclick="showWorkItems(\'' + iteracao.id + '\', \'' + iteracao.name.replace(/'/g, "\\'") + '\', selectedAreaPath)">' + caminho + '</a></td>'
+                    + '<td>' + esc(iteracao.name) + '</td>'
+                    + '<td><a href="#" class="path-link" onclick="showWorkItems(\'' + iteracao.id + '\', \'' + iteracao.name.replace(/'/g, "\\'") + '\', selectedAreaPath)">' + esc(caminho) + '</a></td>'
                     + '<td>' + formatarData(iteracao.attributes.startDate) + '</td>'
                     + '<td>' + formatarData(iteracao.attributes.finishDate) + '</td>'
                     + '<td><span class="' + statusClass + '">' + statusText + '</span></td>'
@@ -211,10 +223,13 @@
         var selectedIterationPath = '';
         var areaTreeData = null;
         var iterationTreeData = null;
+        var iteracoesData = null;
+
+        var ADO_BASE = 'https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384';
+        var TEAM_URL = ADO_BASE + '/949cc173-78b1-4459-be54-be0d7e2ca3f2';
 
         async function initFilters() {
             try {
-                var ADO_BASE = 'https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384';
                 var results = await Promise.all([
                     adoProxy(ADO_BASE + '/_apis/wit/classificationnodes/areas?$depth=10&api-version=7.0'),
                     adoProxy(ADO_BASE + '/_apis/wit/classificationnodes/iterations?$depth=10&api-version=7.0')
@@ -338,9 +353,6 @@
             userFilter.innerHTML = '<option value="">Todos</option>';
             modal.style.display = 'block';
 
-            var ADO_BASE = 'https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384';
-            var TEAM_URL = 'https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/949cc173-78b1-4459-be54-be0d7e2ca3f2';
-
             try {
                 var data = await adoProxy(TEAM_URL + '/_apis/work/teamsettings/iterations/' + iterationId + '/workitems?api-version=7.0');
 
@@ -366,12 +378,12 @@
                         userStoryCount++;
                         var assignee = (f['System.AssignedTo'] && f['System.AssignedTo'].displayName) || '-';
                         if (assignee !== '-') usersSet.add(assignee);
-                        html += '<tr data-user="' + assignee.replace(/"/g, '&quot;') + '">'
+                        html += '<tr data-user="' + esc(assignee) + '">'
                             + '<td>' + wi.id + '</td>'
-                            + '<td>' + (f['System.WorkItemType'] || 'N/A') + '</td>'
-                            + '<td>' + (f['System.Title'] || 'N/A') + '</td>'
-                            + '<td>' + (f['System.State'] || 'N/A') + '</td>'
-                            + '<td>' + assignee + '</td>'
+                            + '<td>' + esc(f['System.WorkItemType'] || 'N/A') + '</td>'
+                            + '<td>' + esc(f['System.Title'] || 'N/A') + '</td>'
+                            + '<td>' + esc(f['System.State'] || 'N/A') + '</td>'
+                            + '<td>' + esc(assignee) + '</td>'
                             + '<td><a href="' + wi._links.html.href + '" target="_blank" class="workitem-link">Ver no Azure</a></td>'
                             + '</tr>';
                     } catch (e) { /* item com erro — ignora */ }
@@ -404,7 +416,6 @@
             var userFilterContainer = document.getElementById('userFilterContainer');
             var userFilter = document.getElementById('userFilter');
 
-            var ADO_BASE = 'https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384';
             var fullIterPath = 'Mastersaf Interfaces\\' + selectedIterationPath;
             var areaClause = selectedAreaPath
                 ? "[System.AreaPath] UNDER 'Mastersaf Interfaces\\" + selectedAreaPath + "'"
@@ -436,12 +447,12 @@
                         count++;
                         var assignee = (f['System.AssignedTo'] && f['System.AssignedTo'].displayName) || '-';
                         if (assignee !== '-') usersSet.add(assignee);
-                        html += '<tr data-user="' + assignee.replace(/"/g, '&quot;') + '">'
+                        html += '<tr data-user="' + esc(assignee) + '">'
                             + '<td>' + wi.id + '</td>'
-                            + '<td>' + (f['System.WorkItemType'] || 'N/A') + '</td>'
-                            + '<td>' + (f['System.Title'] || 'N/A') + '</td>'
-                            + '<td>' + (f['System.State'] || 'N/A') + '</td>'
-                            + '<td>' + assignee + '</td>'
+                            + '<td>' + esc(f['System.WorkItemType'] || 'N/A') + '</td>'
+                            + '<td>' + esc(f['System.Title'] || 'N/A') + '</td>'
+                            + '<td>' + esc(f['System.State'] || 'N/A') + '</td>'
+                            + '<td>' + esc(assignee) + '</td>'
                             + '<td><a href="' + wi._links.html.href + '" target="_blank" class="workitem-link">Ver no Azure</a></td>'
                             + '</tr>';
                     } catch (e) { /* item com erro — ignora */ }

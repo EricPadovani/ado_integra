@@ -1,5 +1,5 @@
 // tests/ado-client.test.js
-const { test, mock } = require('node:test');
+const { test } = require('node:test');
 const assert = require('node:assert');
 
 const MOCK_DATA = {
@@ -19,25 +19,29 @@ test('buscaIteracoesADO retorna dados estruturados', async (t) => {
     };
 
     process.env.ADO_TOKEN = 'dGVzdA==';
-    // Clear module cache para garantir que usa o token do env atual
     delete require.cache[require.resolve('../ado-client')];
     const { buscaIteracoesADO } = require('../ado-client');
 
-    const result = await buscaIteracoesADO();
-    assert.strictEqual(result.count, 2);
-    assert.strictEqual(result.value[0].name, 'Sprint 1');
-
-    global.fetch = saved;
+    try {
+        const result = await buscaIteracoesADO();
+        assert.strictEqual(result.count, 2);
+        assert.strictEqual(result.value[0].name, 'Sprint 1');
+    } finally {
+        global.fetch = saved;
+    }
 });
 
 test('buscaIteracoesADO lança erro se ADO responde não-ok', async (t) => {
     const saved = global.fetch;
     global.fetch = async () => ({ ok: false, status: 401 });
 
+    process.env.ADO_TOKEN = 'dGVzdA==';
     delete require.cache[require.resolve('../ado-client')];
     const { buscaIteracoesADO } = require('../ado-client');
 
-    await assert.rejects(buscaIteracoesADO, /401/);
-
-    global.fetch = saved;
+    try {
+        await assert.rejects(buscaIteracoesADO, /401/);
+    } finally {
+        global.fetch = saved;
+    }
 });

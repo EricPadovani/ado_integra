@@ -439,6 +439,7 @@ function gerarHTML(iteracoes) {
                 </div>
                 <div style="display:flex;gap:6px;padding-bottom:1px;">
                     <button onclick="applyFilter()" style="background:#1e4d8c;color:white;border:none;border-radius:5px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;">Filtrar</button>
+                    <button onclick="showNaoAtribuidos()" style="background:#e67e22;color:white;border:none;border-radius:5px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;" title="Busca work items cujo Iteration Path é exatamente o selecionado (sem sprint)">Não Atribuídos</button>
                     <button onclick="clearFilter()" style="background:none;border:1px solid #aaa;border-radius:5px;padding:8px 14px;font-size:12px;color:#666;cursor:pointer;">Limpar</button>
                 </div>
             </div>
@@ -644,6 +645,98 @@ function gerarHTML(iteracoes) {
             const currentBtn = document.querySelector('.filter-btn[onclick*="current"]'); if (currentBtn) currentBtn.classList.add('active');
         }
 
+        async function showNaoAtribuidos() {
+            if (!selectedIterationPath) {
+                alert('Selecione um Iteration Path para buscar itens não atribuídos a uma sprint.');
+                return;
+            }
+            const modal = document.getElementById('workItemsModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+
+            const fullIterPath = 'Mastersaf Interfaces\\\\' + selectedIterationPath;
+            const areaClause = selectedAreaPath
+                ? "[System.AreaPath] UNDER 'Mastersaf Interfaces\\\\" + selectedAreaPath + "'"
+                : "[System.AreaPath] UNDER 'Mastersaf Interfaces'";
+
+            modalTitle.textContent = 'Não Atribuídos a Sprint: ' + selectedIterationPath;
+            modalContent.innerHTML = '<div class="loading">Buscando work items sem sprint atribuída...</div>';
+
+            const userFilterContainer = document.getElementById('userFilterContainer');
+            const userFilter = document.getElementById('userFilter');
+            userFilterContainer.style.display = 'none';
+            userFilter.innerHTML = '<option value="">Todos</option>';
+            modal.style.display = 'block';
+
+            const wiql = { query: "SELECT [System.Id] FROM WorkItems WHERE [System.IterationPath] = '" + fullIterPath + "' AND " + areaClause + " ORDER BY [System.ChangedDate] DESC" };
+
+            try {
+                const resp = await fetch('https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/_apis/wit/wiql?api-version=7.0', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Basic ${token}', 'Content-Type': 'application/json' },
+                    body: JSON.stringify(wiql)
+                });
+                if (!resp.ok) throw new Error('Erro na API WIQL: ' + resp.status + ' ' + resp.statusText);
+                const data = await resp.json();
+
+                if (!data.workItems || data.workItems.length === 0) {
+                    modalContent.innerHTML = '<p><strong>Nenhum work item encontrado sem sprint atribuída neste caminho.</strong></p>';
+                    return;
+                }
+
+                let html = '<table class="workitems-table"><thead><tr><th>ID</th><th>Tipo</th><th>Título</th><th>Estado</th><th>Responsável</th><th>Link</th><th>Verificar</th><th>Zendesk</th></tr></thead><tbody>';
+                const usersSet = new Set();
+                let count = 0;
+
+                for (const item of data.workItems) {
+                    try {
+                        const wiResp = await fetch('https://dev.azure.com/tr-ggo/9464d7d1-c63b-4af4-9399-dc57bf983384/_apis/wit/workitems/' + item.id + '?api-version=7.0', {
+                            headers: { 'Authorization': 'Basic ${token}', 'Content-Type': 'application/json' }
+                        });
+                        if (!wiResp.ok) continue;
+                        const wi = await wiResp.json();
+                        const f = wi.fields;
+                        count++;
+                        const assignee = (f['System.AssignedTo'] && f['System.AssignedTo'].displayName) || '-';
+                        if (assignee !== '-') usersSet.add(assignee);
+                        const title = (f['System.Title'] || 'N/A').replace(/"/g, '&quot;');
+                        const desc = (f['System.Title'] || '') + ' ' + (f['System.Description'] || '');
+                        const zdMatch = desc.match(/Ticket_(\\d+)/i) || desc.match(/TKT(\\d+)/i);
+                        const zdId = zdMatch ? zdMatch[1] : null;
+                        const zdCell = zdId
+                            ? '<td><button class="btn-zendesk" onclick="previewZendesk(' + wi.id + ', ' + zdId + ')">🎫 Sincronizar</button></td>'
+                            : '<td style="color:#aaa;text-align:center;font-size:12px">—</td>';
+                        html += '<tr data-user="' + assignee.replace(/"/g, '&quot;') + '">'
+                            + '<td><a href="#" class="workitem-id" data-title="' + title + '" onclick="handleWorkItemClick(' + wi.id + ', this.dataset.title)">' + wi.id + '</a></td>'
+                            + '<td>' + (f['System.WorkItemType'] || 'N/A') + '</td>'
+                            + '<td>' + (f['System.Title'] || 'N/A') + '</td>'
+                            + '<td>' + (f['System.State'] || 'N/A') + '</td>'
+                            + '<td>' + assignee + '</td>'
+                            + '<td><a href="' + wi._links.html.href + '" target="_blank" class="workitem-link">Ver no Azure</a></td>'
+                            + '<td><button class="btn-analise-ia" onclick="analisarWorkItem(' + wi.id + ')">Verificar</button></td>'
+                            + zdCell
+                            + '</tr>';
+                    } catch (e) {
+                        console.error('Erro item ' + item.id, e);
+                    }
+                }
+
+                html += '</tbody></table>';
+                modalContent.innerHTML = '<p><strong>' + count + ' work item(s) sem sprint atribuída em: ' + selectedIterationPath + '</strong></p>' + html;
+
+                if (usersSet.size > 0) {
+                    usersSet.forEach(function(u) {
+                        const opt = document.createElement('option');
+                        opt.value = u; opt.textContent = u;
+                        userFilter.appendChild(opt);
+                    });
+                    userFilterContainer.style.display = 'block';
+                }
+            } catch (e) {
+                modalContent.innerHTML = '<div class="error">Erro ao buscar itens não atribuídos: ' + e.message + '</div>';
+            }
+        }
+
         function updateFilterBadge() {
             let badge = document.getElementById('filterActiveBadge');
             if (!badge) {
@@ -736,9 +829,13 @@ function gerarHTML(iteracoes) {
 
                                 if (fields['System.WorkItemType'] === 'User Story') {
                                     if (areaPath) {
-                                        const fullArea = 'Mastersaf Interfaces\\\\' + areaPath;
-                                        const itemArea = fields['System.AreaPath'];
-                                        if (itemArea !== undefined && itemArea !== fullArea && !itemArea.startsWith(fullArea + '\\\\')) continue;
+                                        const fullArea = ('Mastersaf Interfaces\\\\' + areaPath).normalize('NFC');
+                                        const rawItemArea = fields['System.AreaPath'];
+                                        if (rawItemArea !== undefined) {
+                                            const itemArea = rawItemArea.normalize('NFC');
+                                            console.log('[AREA FILTER] id=' + workItemData.id + ' fullArea=' + JSON.stringify(fullArea) + ' itemArea=' + JSON.stringify(itemArea) + ' match=' + (itemArea === fullArea || itemArea.startsWith(fullArea + '\\\\')));
+                                            if (itemArea !== fullArea && !itemArea.startsWith(fullArea + '\\\\')) continue;
+                                        }
                                     }
                                     userStoryCount++;
                                     const assignee = (fields['System.AssignedTo'] && fields['System.AssignedTo'].displayName) || '-';

@@ -41,7 +41,7 @@ app.post('/api/proxy', async (req, res) => {
     }
 });
 
-const SAP_BASE = process.env.SAP_SERVER_URL || 'http://localhost:80';
+const SAP_BASE = process.env.SAP_SERVER_URL || 'http://127.0.0.1:80';
 
 async function sapProxy(req, res, sapPath) {
     try {

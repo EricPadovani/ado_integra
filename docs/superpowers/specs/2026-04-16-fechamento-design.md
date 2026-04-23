@@ -172,3 +172,5 @@ Resposta:
 - Edição manual dos DEV numbers (apenas remoção)
 - Integração com Zendesk
 - Nomes/parâmetros reais das RFCs SAP (preenchidos quando disponíveis)
+ok
+

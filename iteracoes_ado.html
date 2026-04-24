@@ -1712,7 +1712,7 @@
                 const f = adoData.fields || {};
                 const title = f['System.Title'] || '';
                 const descRaw = f['System.Description'] ? f['System.Description'].replace(/<\/?(p|div|br|li|tr)[^>]*>/gi, ' ').replace(/<[^>]*>/g, '') : '';
-                adoSpec = 'Titulo: ' + title + '\nEstado: ' + (f['System.State'] || '') + '\nDescrição:\n' + descRaw;
+                adoSpec = 'Título: ' + title + '\nEstado: ' + (f['System.State'] || '') + '\nDescrição:\n' + descRaw;
 
                 adoHtml = '<div class="ado-result"><h4>🔵 Azure DevOps — Work Item #' + workItemId + '</h4>' +
                     '<table class="detail-table">' +

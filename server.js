@@ -5,7 +5,7 @@ const path = require('path');
 const { buscaIteracoesADO } = require('./ado-client');
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const ADO_ALLOWED_PREFIX = 'https://dev.azure.com/tr-ggo/';
@@ -44,9 +44,11 @@ app.post('/api/proxy', async (req, res) => {
 const SAP_BASE = process.env.SAP_SERVER_URL || 'http://127.0.0.1:80';
 
 async function sapProxy(req, res, sapPath) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 120000);
     try {
         const qs = Object.keys(req.query).length ? '?' + new URLSearchParams(req.query).toString() : '';
-        const opts = { method: req.method, headers: { 'Content-Type': 'application/json' } };
+        const opts = { method: req.method, headers: { 'Content-Type': 'application/json' }, signal: controller.signal };
         if (req.method === 'POST') {
             const body = sapPath === '/api/zendesk/sync-to-ado'
                 ? { ...req.body, adoToken: process.env.ADO_TOKEN }
@@ -58,6 +60,8 @@ async function sapProxy(req, res, sapPath) {
         res.status(r.status).json(data);
     } catch (e) {
         res.status(502).json({ success: false, error: 'SAP server indisponível: ' + e.message });
+    } finally {
+        clearTimeout(timeout);
     }
 }
 
